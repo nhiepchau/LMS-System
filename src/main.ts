@@ -14,14 +14,15 @@ import App from './App.vue'
 
 // Composables
 import { createApp } from 'vue'
-import http from './utils/http'
+import { createPinia } from 'pinia'
 
-const app = createApp(App)
+const app = createApp(App);
+const pinia = createPinia();
 
 registerPlugins(app)
 
 app
     .use(router)
     .provide('auth', auth)
-    .use(http)
+    .use(pinia)
     .mount('#app')
