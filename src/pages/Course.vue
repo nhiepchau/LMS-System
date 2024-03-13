@@ -1,4 +1,8 @@
 <template>
+    <top-bar />
+
+    <v-divider />
+
     <v-container>
         <h1>All courses</h1>
     </v-container>

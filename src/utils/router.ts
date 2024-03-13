@@ -27,6 +27,22 @@ const router = createRouter({
         {
             path: '/outcome',
             component: () => import("@/pages/Outcome.vue")
+        },
+        {
+            path: '/report',
+            component: () => import("@/pages/Report.vue")
+        },
+        {
+            path: '/notification',
+            component: () => import("@/pages/Notification.vue")
+        },
+        {
+            path: '/setting',
+            component: () => import("@/pages/Setting.vue")
+        },
+        {
+            path: '/login',
+            component: () => import("@/pages/Login.vue")
         }
     ]
 });
