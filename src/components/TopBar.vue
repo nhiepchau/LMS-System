@@ -33,6 +33,7 @@
             <v-list-item title="Logout" value="Logout"></v-list-item>
         </v-list-group>
     </v-toolbar>
+    <v-divider />
 </template>
 
 <script setup lang="ts">

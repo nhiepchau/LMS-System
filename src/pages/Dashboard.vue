@@ -1,4 +1,5 @@
 <template>
+    <top-bar />
     <v-container>
         <h1>Dashboard</h1>
     </v-container>

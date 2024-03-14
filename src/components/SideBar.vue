@@ -1,39 +1,39 @@
 <template>
   <v-navigation-drawer permanent>
-    <v-img src="../assets/images/LMS-Ava.png" width="8rem" class="ml-3 my-2" />
+    <div class="d-flex flex-column h-100">
+      <div>
+        <v-img src="../assets/images/LMS-Ava.png" width="8rem" class="ml-3 my-2" />
+        <v-list nav density="compact">
+          <v-list-item title="Home" value="home" to="/">
+            <template v-slot:prepend>
+              <v-icon size="md">fas fa-home</v-icon>
+            </template>
+          </v-list-item>
 
-    <div class="d-flex flex-column">
-      <v-list nav density="compact">
-        <v-list-item title="Home" value="home" to="/">
-          <template v-slot:prepend>
-            <v-icon size="md">fas fa-home</v-icon>
-          </template>
-        </v-list-item>
+          <v-list-item title="Courses" value="Courses" to="/course" >
+            <template v-slot:prepend>
+              <v-icon size="md">fas fa-book</v-icon>
+            </template>
+          </v-list-item>
 
-        <v-list-item title="Courses" value="Courses" to="/course" >
-          <template v-slot:prepend>
-            <v-icon size="md">fas fa-book</v-icon>
-          </template>
-        </v-list-item>
-
-        <v-list-item title="Reports" value="reports" to="/report">
-          <template v-slot:prepend>
-            <v-icon size="md">fas fa-chart-pie</v-icon>
-          </template> 
-        </v-list-item>
-        <v-list-item title="Notifications" value="notify" to="/notification">
-          <template v-slot:prepend>
-            <v-icon size="md">fas fa-bell</v-icon>
-          </template> 
-        </v-list-item>
-        <v-list-item title="Settings" value="setting" to="/setting">
-          <template v-slot:prepend>
-            <v-icon size="md">fas fa-cog</v-icon>
-          </template> 
-        </v-list-item>
-      </v-list>
-
-      <v-btn block @click.prevent="onLogOut" density="comfortable" >Log out</v-btn>
+          <v-list-item title="Reports" value="reports" to="/report">
+            <template v-slot:prepend>
+              <v-icon size="md">fas fa-chart-pie</v-icon>
+            </template> 
+          </v-list-item>
+          <v-list-item title="Notifications" value="notify" to="/notification">
+            <template v-slot:prepend>
+              <v-icon size="md">fas fa-bell</v-icon>
+            </template> 
+          </v-list-item>
+          <v-list-item title="Settings" value="setting" to="/setting">
+            <template v-slot:prepend>
+              <v-icon size="md">fas fa-cog</v-icon>
+            </template> 
+          </v-list-item>
+        </v-list>
+      </div>
+      <v-btn class="text-none w-75 mx-auto mt-auto mb-10 bg-grey-lighten-4 text-grey-darken-2" prepend-icon="fas fa-sign-out-alt" variant="flat" @click.prevent="onLogOut" >Logout</v-btn>
     </div>
   </v-navigation-drawer>
 </template>

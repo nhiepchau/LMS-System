@@ -1,8 +1,9 @@
 <template>
-    <v-container>
-        <h1>Login</h1>
+    <v-container class="bg-grey-lighten-4 h-screen" fluid>
+        <h1 class="text-center my-10">Learning Outcome System Support</h1>
 
-        <v-card class="mx-auto px-6 py-8" max-width="344">
+        <v-card class="mx-auto px-6 py-8" max-width="400">
+            <v-img src="../assets/images/LMS-Ava.png" width="8rem" class="mb-8 mx-auto" />
             <v-form
                 v-model="form"
                 @submit.prevent="onSubmit"
