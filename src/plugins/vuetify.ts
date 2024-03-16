@@ -20,5 +20,16 @@ export default createVuetify({
     sets: {
       fa,
     },
+  },
+  theme: {
+    themes: {
+      light: {
+        dark: false,
+        colors: {
+          primary: '#222E50',
+          grey: '#FAFAFB'
+        }
+      }
+    }
   }
 })

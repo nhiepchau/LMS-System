@@ -84,7 +84,7 @@ function onSubmit () {
             localStorage.setItem("username", username.value.toString());
             localStorage.setItem("password", password.value.toString());
 
-            router.push('/');
+            router.push('/home');
         }
         else {
             correctAccount.value = false;
