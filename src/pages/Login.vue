@@ -1,6 +1,6 @@
 <template>
     <v-container class="bg-grey-lighten-4 h-screen" fluid>
-        <h1 class="text-center my-10">Learning Outcome System Support</h1>
+        <h1 class="text-center my-10">Learning Outcome Evaluation Support</h1>
 
         <v-card class="mx-auto px-6 py-8" max-width="400">
             <v-img src="../assets/images/LMS-Ava.png" width="8rem" class="mb-8 mx-auto" />
@@ -24,6 +24,7 @@
                 label="Password"
                 placeholder="Enter your password"
                 clearable
+                type="password"
                 ></v-text-field>
 
                 <br>
