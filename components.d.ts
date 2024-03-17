@@ -7,8 +7,13 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    BreadCrumb: typeof import('./src/components/BreadCrumb.vue')['default']
+    CourseDetail: typeof import('./src/components/Course/CourseDetail.vue')['default']
     CourseInfoItem: typeof import('./src/components/Course/CourseInfoItem.vue')['default']
     CourseItem: typeof import('./src/components/Course/CourseItem.vue')['default']
+    FileInput: typeof import('./src/components/Base/FileInput.vue')['default']
+    LabContribution: typeof import('./src/components/Course/LabContribution.vue')['default']
+    LabItem: typeof import('./src/components/Course/LabItem.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SideBar: typeof import('./src/components/SideBar.vue')['default']

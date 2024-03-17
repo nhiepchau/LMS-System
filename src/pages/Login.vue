@@ -1,5 +1,5 @@
 <template>
-    <v-container class="bg-grey-lighten-4 h-screen" fluid>
+    <v-container class="bg-grey-lighten-4 h-100" fluid>
         <h1 class="text-center my-10">Learning Outcome Evaluation Support</h1>
 
         <v-card class="mx-auto px-6 py-8" max-width="400">
@@ -41,7 +41,7 @@
                 Sign In
                 </v-btn>
 
-                <p v-if="!correctAccount" class="text-error text-sm-center mt-4">Incorrect username or password!</p>
+                <p v-if="!authenticated" class="text-error text-sm-center mt-4">Incorrect username or password!</p>
             </v-form>
         </v-card>
     </v-container>
@@ -49,47 +49,56 @@
 
 <script setup lang="ts">
 import router from '@/utils/router';
-import { ref, inject, onMounted } from 'vue';
+import { ref } from 'vue';
+import http from '@/utils/http';
+import useAuth from '@/services/auth';
+
+// Store
+const auth = useAuth();
 
 // Variables
 const form = ref(false);
 const username = ref<String>("");
 const password = ref<String>("");
 const loading = ref(false);
-const correctAccount = ref(true);
-
-const auth = inject<(a: String, b: String) => Boolean>('auth', (_, __) => false);
-
-onMounted(() => {
-    localStorage.setItem("username", "");
-    localStorage.setItem("password", "");
-})
+const authenticated = ref(true);
 
 // Methods
-function onSubmit () {
+async function onSubmit () {
     if (!form.value) return
 
     loading.value = true
 
-    setTimeout(() => {
+    setTimeout(async () => {
         loading.value = false;
 
-        const userNameVal = username.value.toString();
+        const usernameVal = username.value.toString();
         const passwordVal = password.value.toString();
+        auth.setLogin(usernameVal, passwordVal);
+
+        // Save into session storage
+        sessionStorage.setItem('username', usernameVal);
+        sessionStorage.setItem('password', passwordVal);
 
         // Authenticate account
-        if (auth(userNameVal, passwordVal)) {
-            correctAccount.value = true;
+        const payload = await http.post('api-auth/login', { username: username.value, password: password.value })
+            .catch(function(response) {
+                console.log('Testing ', response);
 
-            // Save login info to local storage
-            localStorage.setItem("username", username.value.toString());
-            localStorage.setItem("password", password.value.toString());
+                let token = btoa(`${username.value}:${password.value}`);
+                auth.setUserInfo(token, { name: 'Minh Chau', role: 'Teacher' })
 
-            router.push('/home');
-        }
-        else {
-            correctAccount.value = false;
-        }
+                // Set new header for axios
+                http.interceptors.request.use(
+                    config => {
+                        config.headers['Authorization'] = `Basic ${btoa(auth.username + ':' + auth.password)}`;
+                            return config;
+                        },
+                );
+
+                // Redirect to homepage
+                router.push({ name: 'homepage' });
+            });
     }, 1000)
 }
 function required (v: String) {

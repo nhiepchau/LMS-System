@@ -27,7 +27,11 @@ export default createVuetify({
         dark: false,
         colors: {
           primary: '#222E50',
-          grey: '#FAFAFB'
+          grey: '#FAFAFB',
+          secondary: '#171A1F',
+          sub: '#4B7BEC',
+          'dark-green': '#2A4849',
+          'dark-grey': '#6E7787'
         }
       }
     }

@@ -1,18 +1,19 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Dashboard from "@/pages/Dashboard.vue";
+import useAuth from "@/services/auth";
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
-            path: '/home',
+            path: '/',
             component: Dashboard,
-            name: 'LMS System'
+            name: 'homepage'
         },
         {
             path: '/course',
-            component: () => import("@/pages/Course.vue"),
             children: [
+                { path: '', component: () => import("@/pages/Course.vue") },
                 { path: 'create', component: () => import("@/pages/CreateCourse.vue") }
             ]
         },
@@ -41,10 +42,23 @@ const router = createRouter({
             component: () => import("@/pages/Setting.vue")
         },
         {
-            path: '/login',
+            path: '/',
+            name: 'login',
             component: () => import("@/pages/Login.vue")
+        },
+        {
+            path: '/:pathMatch(.*)*',
+            component: () => import("@/pages/NotFound.vue")
         }
     ]
 });
+
+router.beforeEach((to, from) => {
+    const auth = useAuth();
+
+    if (!auth.isAuthenticated && to.name !== 'login') {
+        return { name: 'login' }
+    }
+})
 
 export default router;

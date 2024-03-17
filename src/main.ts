@@ -7,7 +7,6 @@
 // Plugins
 import { registerPlugins } from '@/plugins'
 import router from './utils/router'
-import auth from './utils/auth'
 
 // Components
 import App from './App.vue'
@@ -22,7 +21,6 @@ const pinia = createPinia();
 registerPlugins(app)
 
 app
-    .use(router)
-    .provide('auth', auth)
     .use(pinia)
+    .use(router)
     .mount('#app')

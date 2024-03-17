@@ -4,7 +4,7 @@
       <div>
         <v-img src="../assets/images/LMS-Ava.png" width="8rem" class="ml-3 my-2" />
         <v-list nav density="compact">
-          <v-list-item title="Home" value="home" to="/home">
+          <v-list-item title="Home" value="home" to="/">
             <template v-slot:prepend>
               <v-icon size="md">fas fa-home</v-icon>
             </template>
@@ -39,12 +39,15 @@
 </template>
 
 <script setup lang="ts">
+import useAuth from '@/services/auth';
 import router from '@/utils/router';
 
 function onLogOut() {
-  localStorage.setItem("username", "");
-  localStorage.setItem("password", "");
+  sessionStorage.clear();
 
-  router.push('/login');
+  const auth = useAuth();
+  auth.setLogin(null, null);
+
+  router.push({ name: 'login' });
 }
 </script>
