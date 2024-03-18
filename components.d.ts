@@ -11,12 +11,14 @@ declare module 'vue' {
     CourseDetail: typeof import('./src/components/Course/CourseDetail.vue')['default']
     CourseInfoItem: typeof import('./src/components/Course/CourseInfoItem.vue')['default']
     CourseItem: typeof import('./src/components/Course/CourseItem.vue')['default']
+    CreateCourseForm: typeof import('./src/components/Course/CreateCourseForm.vue')['default']
     FileInput: typeof import('./src/components/Base/FileInput.vue')['default']
     LabContribution: typeof import('./src/components/Course/LabContribution.vue')['default']
     LabItem: typeof import('./src/components/Course/LabItem.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SideBar: typeof import('./src/components/SideBar.vue')['default']
+    SubmissionForm: typeof import('./src/components/Course/SubmissionForm.vue')['default']
     TopBar: typeof import('./src/components/TopBar.vue')['default']
   }
 }

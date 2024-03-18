@@ -31,7 +31,8 @@ export default createVuetify({
           secondary: '#171A1F',
           sub: '#4B7BEC',
           'dark-green': '#2A4849',
-          'dark-grey': '#6E7787'
+          'dark-grey': '#6E7787',
+          'light-blue': '#DCE6FB'
         }
       }
     }

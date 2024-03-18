@@ -9,6 +9,7 @@
     variant="outlined"
     counter
     density="compact"
+    @update:modelValue="getFiles()"
   >
     <template v-slot:selection="{ fileNames }">
       <template v-for="(fileName, index) in fileNames" :key="fileName">
@@ -37,4 +38,14 @@
 import { ref } from 'vue';
 
 const files = ref<File[]>([]);
+
+// Record files
+async function getFiles() {
+  if (files.value.length > 0) {
+    let file = files.value.at(0);
+    let content = await file?.arrayBuffer();
+
+    console.log('Files ', file, content)
+  }
+}
 </script>

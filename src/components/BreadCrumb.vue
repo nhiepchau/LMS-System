@@ -11,22 +11,50 @@
 </template>
 
 <script setup lang="ts">
-const items = [
+import { watch, ref } from 'vue';
+
+const props = defineProps({
+    activeIdx: {
+        type: Number,
+        default: 0
+    }
+});
+
+interface BreadCrumbItem {
+    title: string,
+    icon: string,
+    color: string,
+    disabled: boolean
+}
+
+const items = ref<BreadCrumbItem[]>([
     {
         title: 'Course & Exercises',
         icon: 'fas fa-book',
-        disabled: false,
-        color: '#6F9CEB'
+        color: '#6F9CEB',
+        disabled: false
     },
     {
         title: 'Submissions',
         icon: 'fas fa-file-code',
+        color: '',
         disabled: true
     },
     {
         title: 'Analysis',
         icon: 'fas fa-chart-pie',
+        color: '',
         disabled: true
     }
-]
+]);
+
+watch(() => props.activeIdx, (newIdx, oldIdx) => {
+    items.value.forEach(x => {
+        items.value[oldIdx].color = '';
+        items.value[oldIdx].disabled = true;
+
+        items.value[newIdx].color = '#6F9CEB';
+        items.value[newIdx].disabled = false;
+    });
+});
 </script>
