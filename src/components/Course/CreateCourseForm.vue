@@ -6,7 +6,6 @@
     <v-row class="mt-4">
         <v-col cols="6">
             <v-text-field
-            bg-color="#F3F4F6"
             label="Course Name"
             model-value="Data structure & algorithm"
             variant="solo"
@@ -19,14 +18,12 @@
                 label="Department"
                 :items="['CSE', 'Chemistry', 'Physics', 'Math']"
                 variant="solo"
-                bg-color="#F3F4F6"
                 density="comfortable"
                 model-value="CSE"
             ></v-combobox>
         </v-col>
         <v-col cols="3">
             <v-text-field
-                bg-color="#F3F4F6"
                 label="No. of Lab"
                 model-value="10"
                 variant="solo"
@@ -39,7 +36,7 @@
         <v-icon class="my-auto mr-2 text-sub" size="small">far fa-calendar</v-icon>
         <h3 class="my-auto text-primary">Semester</h3>
     </div>
-    <v-table>
+    <v-table class="bg-grey" >
         <thead>
             <tr>
                 <th>Semester</th>
@@ -51,10 +48,10 @@
             <tr v-for="idx in count" :key="idx" >
                 <td>
                     <v-text-field
-                        rounded="sm"
-                        bg-color="#F3F4F6"
+                        rounded="md"
+                        bg-color="white"
                         model-value="231"
-                        variant="solo"
+                        variant="outlined"
                         flat
                         class="my-2"
                         density="compact"
