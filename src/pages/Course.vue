@@ -3,10 +3,10 @@
 
     <v-container>
         <div class="d-flex flex-row w-100 justify-space-between">
-            <h1 class="text-primary">All courses</h1>
+            <h1 class="text-primary">All classes</h1>
             <div>
                 <v-btn variant="outlined" class="text-none text-primary mr-3" prepend-icon="fas fa-file-download">Export</v-btn>
-                <v-btn @click.prevent="() => router.push('/course/create')" variant="flat" height="40" class="text-none bg-primary text-white" prepend-icon="fas fa-plus">New course</v-btn>
+                <v-btn @click.prevent="() => router.push('/class/create')" variant="flat" height="40" class="text-none bg-primary text-white" prepend-icon="fas fa-plus">New classes</v-btn>
             </div>
         </div>
 

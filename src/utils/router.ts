@@ -11,7 +11,7 @@ const router = createRouter({
             name: 'homepage'
         },
         {
-            path: '/course',
+            path: '/class',
             children: [
                 { path: '', component: () => import("@/pages/Course.vue") },
                 { path: 'create', component: () => import("@/pages/CreateCourse.vue") }

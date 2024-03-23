@@ -29,7 +29,7 @@ interface BreadCrumbItem {
 
 const items = ref<BreadCrumbItem[]>([
     {
-        title: 'Course & Exercises',
+        title: 'Classes & Exercises',
         icon: 'fas fa-book',
         color: '#6F9CEB',
         disabled: false

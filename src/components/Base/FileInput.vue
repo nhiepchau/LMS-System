@@ -10,6 +10,7 @@
     counter
     density="compact"
     @update:modelValue="getFiles()"
+    multiple
   >
     <template v-slot:selection="{ fileNames }">
       <template v-for="(fileName, index) in fileNames" :key="fileName">

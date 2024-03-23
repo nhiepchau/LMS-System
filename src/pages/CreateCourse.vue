@@ -1,11 +1,12 @@
 <template>
     <top-bar></top-bar>
     <v-container>
-        <h1>Create a course</h1>
+        <h1>Create classes</h1>
         <bread-crumb :activeIdx="page" class="my-2"></bread-crumb>
         <div class="border-sm px-3 py-5 rounded mt-4">
             <create-course-form v-if="page === 0" ></create-course-form>
             <submission-form v-if="page === 1"></submission-form>
+            <analysis-form v-if="page === 2"></analysis-form>
         </div>
         <div class="mt-2 text-right">
             <v-btn

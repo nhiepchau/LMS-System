@@ -10,7 +10,7 @@
             </template>
           </v-list-item>
 
-          <v-list-item title="Courses" value="Courses" to="/course" >
+          <v-list-item title="Classes" value="classes" to="/class" >
             <template v-slot:prepend>
               <v-icon size="md">fas fa-book</v-icon>
             </template>
