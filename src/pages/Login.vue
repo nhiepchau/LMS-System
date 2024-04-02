@@ -70,34 +70,35 @@ async function onSubmit () {
     loading.value = true
 
     setTimeout(async () => {
-        loading.value = false;
-
         const usernameVal = username.value.toString();
         const passwordVal = password.value.toString();
-        auth.setLogin(usernameVal, passwordVal);
-
-        // Save into session storage
-        sessionStorage.setItem('username', usernameVal);
-        sessionStorage.setItem('password', passwordVal);
-
         // Authenticate account
-        const payload = await http.post('api-auth/login', { username: username.value, password: password.value })
-            .catch(function(response) {
-                console.log('Testing ', response);
-
-                let token = btoa(`${username.value}:${password.value}`);
-                auth.setUserInfo(token, { name: 'Minh Chau', role: 'Teacher' })
-
+        const payload = await http.post('/api-token-auth/', { username: username.value, password: password.value })
+            .then(function(response) {
+                console.log('JWT Token ', response.data.access);
+                loading.value = false;
                 // Set new header for axios
                 http.interceptors.request.use(
                     config => {
-                        config.headers['Authorization'] = `Basic ${btoa(auth.username + ':' + auth.password)}`;
+                        config.headers['Authorization'] = `Bearer ${response.data.access}`;
                             return config;
                         },
                 );
 
+                // Save login info
+                auth.setLogin(usernameVal, passwordVal, response.data.access);
+
+                // Save into session storage
+                sessionStorage.setItem('username', usernameVal);
+                sessionStorage.setItem('password', passwordVal);
+                sessionStorage.setItem('token', response.data.access);
+
                 // Redirect to homepage
                 router.push({ name: 'homepage' });
+            })
+            .catch(() => {
+                authenticated.value = false;
+                loading.value = false;
             });
     }, 1000)
 }

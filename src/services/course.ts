@@ -5,57 +5,31 @@ import { defineStore } from "pinia";
 const useCourse = defineStore('course', {
     state: () => {
         return {
-            tempCourse: {
-                Classes: [
-                    {
-                        Name: '',
-                        Default: false
-                    }
-                ]
-            } as CourseModel,
-            courses: [{
+            selectedCourse: {
                 CourseName: '',
-                Semester: 'HK232',
-                NumOfLabs: 10,
+                Semester: '',
+                NumOfLabs: 0,
                 Classes: [
                     {
                         Name: '',
                         Default: false
                     }
                 ]
-            }] as CourseModel[]
+            } as CourseModel
         }
     },
 
     getters: {
-        getCourses: (state) => state.courses,
-        getCourseById: (state) => {
-            return (idx: number) => {
-                let course = idx < 0 ? state.tempCourse : state.courses[idx];
-                return course;
-            }
-        },
+        getCourse: (state) => state.selectedCourse,
         getValidClasses: (state) => {
             return () => {
-                return state.tempCourse.Classes.filter(x => x.Name !== '');
+                return state.selectedCourse.Classes.filter(x => x.Name !== '');
             }
         }
     },
     actions: {
-        addCourse(course: CourseModel) {
-            this.courses.push(course)
-        },
-
-        setCourse(idx: number, course: CourseModel) {
-            this.courses[idx] = course;
-        },
-
-        editCourse(idx: number, attr: 'CourseName' | 'Semester' | 'NumOfLabs', value: string | number) {
-            let course = idx < 0 ? this.tempCourse : this.courses[idx];
-
-            if (!course) {
-                return 'Course is not found!';
-            }
+        editCourse(attr: 'CourseName' | 'Semester' | 'NumOfLabs', value: string | number) {
+            let course = this.selectedCourse;
 
             switch (attr) {
                 case 'CourseName':
@@ -73,19 +47,33 @@ const useCourse = defineStore('course', {
             }
         },
 
-        addClass(idx: number, newClass: ClassModel) {
-            let course = idx < 0 ? this.tempCourse : this.courses[idx];
+        addClass(newClass: ClassModel) {
+            this.selectedCourse.Classes.push(newClass);
+        },
 
-            if (course) {
-                course.Classes.push(newClass);
+        setClassName(idx: number, className: string) {
+            let oldClass = this.selectedCourse.Classes[idx];
+
+            if (oldClass) {
+                this.selectedCourse.Classes[idx].Name = className;
             }
         },
 
-        setClass(idx: number, classes: ClassModel[]) {
-            let course = idx < 0 ? this.tempCourse : this.courses[idx];
+        setClassDefault(idx: number, isDefault: boolean) {
+            let oldClass = this.selectedCourse.Classes[idx];
 
-            if (course) {
-                course.Classes = classes;
+            if (oldClass) {
+                this.selectedCourse.Classes[idx].Default = isDefault;
+            }
+        },
+
+        setClassFile(idx: number, file: File, type: 'Submission' | 'Exercise' | string) {
+            if (type !== 'Submission' && type !== 'Exercise') return
+
+            let oldClass = this.selectedCourse.Classes[idx];
+
+            if (oldClass) {
+                this.selectedCourse.Classes[idx][type] = file
             }
         }
     }

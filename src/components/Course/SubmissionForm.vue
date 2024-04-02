@@ -24,7 +24,7 @@
                                 <h3>Submissions file</h3>
                             </div>
                             <div class="mt-15">
-                                <file-input></file-input>
+                                <file-input :idx="idx" type="Submission" ></file-input>
                             </div>
                         </v-window-item>
                     </v-window>

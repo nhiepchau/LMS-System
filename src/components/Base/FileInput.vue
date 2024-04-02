@@ -2,7 +2,7 @@
   <v-file-input
     v-model="files"
     :show-size="1000"
-    color="#C8D6F9"
+    color="sub"
     label="File input"
     placeholder="Choose your file"
     prepend-icon="fas fa-paperclip"
@@ -10,7 +10,6 @@
     counter
     density="compact"
     @update:modelValue="getFiles()"
-    multiple
   >
     <template v-slot:selection="{ fileNames }">
       <template v-for="(fileName, index) in fileNames" :key="fileName">
@@ -36,17 +35,48 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import useCourse from '@/services/course';
 
+const manageCourse = useCourse();
 const files = ref<File[]>([]);
+
+const props = defineProps({
+  idx: {
+    type: Number,
+    default: -1
+  },
+  type: {
+    type: String,
+    default: ''
+  }
+});
+
+onMounted(() => {
+  var classes = manageCourse.getValidClasses();
+
+  if (props.type !== 'Submission' && props.type !== 'Exercise')
+    return;
+
+  if (props.idx >= 0 && classes.length > props.idx) {
+    files.value = [];
+
+    const storedFile = classes[props.idx][props.type];
+    if (storedFile) {
+      files.value.push(storedFile)
+    }
+  }
+})
 
 // Record files
 async function getFiles() {
   if (files.value.length > 0) {
     let file = files.value.at(0);
-    let content = await file?.arrayBuffer();
+    // let content = await file?.arrayBuffer();
 
-    console.log('Files ', file, content)
+    if (file) {
+      manageCourse.setClassFile(props.idx, file, props.type);
+    }
   }
 }
 </script>

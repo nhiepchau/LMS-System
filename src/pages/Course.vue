@@ -11,7 +11,7 @@
         </div>
 
         <div class="w-100 mt-10 d-flex">
-            <course-item class="mr-4" v-for="(course, index) in courses" :key="index" :id="index" :name="course.name" :semesters="course.semesters"></course-item>
+            <course-item class="mr-4" v-for="(course, index) in courses" :key="index" :id="index" :department="course.department" :name="course.name" :semesters="course.semesters"></course-item>
         </div>
     </v-container>
 </template>
@@ -21,17 +21,18 @@ import http from '@/utils/http';
 import { onMounted, ref } from 'vue';
 import router from '@/utils/router';
 
-const courses = ref<Array<{ name: String, semesters: Array<string> }>>();
+const courses = ref<Array<{ name: String, semesters: Array<string>, department: String }>>();
 
 async function getCourses() {
-    const { data } = await http.get('api/courses');
+    const { data } = await http.get('/api/courses');
 
     console.log('Courses ', data)
 
-    courses.value = data.map((x: { course: any; course_semester: any; }) => {
+    courses.value = data.map((x: { course_name: any; course_code: any; department: any }) => {
         return {
-            name: x.course,
-            semesters: x.course_semester
+            name: `${x.course_code} - ${x.course_name}`,
+            semesters: ['HK231'],
+            department: x.department
         }
     });
 } 

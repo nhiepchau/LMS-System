@@ -46,7 +46,7 @@ function onLogOut() {
   sessionStorage.clear();
 
   const auth = useAuth();
-  auth.setLogin(null, null);
+  auth.setLogin(null, null, null);
 
   router.push({ name: 'login' });
 }

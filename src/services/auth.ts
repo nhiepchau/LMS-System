@@ -8,7 +8,7 @@ interface UserInfo {
 const useAuth = defineStore('auth', {
     state: () => {
         return {
-            token: "" as string,
+            token: null as string | null,
             username: null as string | null,
             password: null as string | null,
             user: { name: '', role: '' } as UserInfo
@@ -18,9 +18,10 @@ const useAuth = defineStore('auth', {
         isAuthenticated: (state) => state.username && state.password
     },
     actions: {
-        setLogin(username: string | null, password: string | null) {
+        setLogin(username: string | null, password: string | null, token: string | null) {
             this.username = username;
             this.password = password;
+            this.token = token;
         },
 
         setUserInfo(token: string, user: UserInfo) {

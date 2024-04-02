@@ -9,7 +9,7 @@
             <div class="d-flex flex-row">
                 <v-img src="../../assets/images/CourseImg2.png" class="my-2 mr-4" />
                 <div class="w-75 my-2 d-flex flex-column align-start">
-                    <div class="text-caption mb-auto font-weight-bold text-grey-darken-1">CSE</div>
+                    <div class="text-caption mb-auto font-weight-bold text-grey-darken-1">{{ props.department }}</div>
                     <div class="text-h6">
                     {{ props.name }}
                     </div>
@@ -57,6 +57,10 @@ const props = defineProps({
     id: {
         type: Number,
         default: 0
+    },
+    department: {
+        type: String,
+        default: ''
     },
     name: {
         type: String,

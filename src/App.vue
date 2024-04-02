@@ -19,8 +19,9 @@ const isAuthenticated = computed<boolean>(() => {
   // Otherwise, get username/password from auth store
   const username = auth.username ?? sessionStorage.getItem('username');
   const password = auth.password ?? sessionStorage.getItem('password');
+  const token = auth.token ?? sessionStorage.getItem('token');
 
-  auth.setLogin(username, password);
+  auth.setLogin(username, password, token);
 
   return username !== null && password !== null;
 })
