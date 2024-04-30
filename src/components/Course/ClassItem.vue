@@ -7,25 +7,25 @@
         <v-card-item>
         <div class="text-secondary w-100">
             <div class="d-flex flex-row">
-                <v-img src="../../assets/images/CourseImg2.png" class="my-2 mr-4" />
+                <v-img :src="imageUrls[props.id % 4]" class="my-2 mr-4" />
                 <div class="w-75 my-2 d-flex flex-column align-start">
-                    <div class="text-caption mb-auto font-weight-bold text-grey-darken-1">{{ props.department }}</div>
+                    <div class="text-caption mb-auto font-weight-bold text-grey-darken-1">[HK{{ props.semester }}] {{ props.group }}</div>
                     <div class="text-h6">
                     {{ props.name }}
                     </div>
                 </div>
             </div>
-            <v-autocomplete
+            <v-text-field                
                 bg-color="blue-lighten-5"
                 color="blue-darken-2"
                 class="w-75 float-end text-blue-darken-2"
                 variant="solo"
                 flat
                 density="compact"
-                label="Semester"
-                :items="semesters"
-                v-model="selectedSemester"
-            ></v-autocomplete>
+                label="Class Code"
+                :model-value="props.code"
+                readonly
+            ></v-text-field>
         </div>
         </v-card-item>
         <v-divider />
@@ -41,7 +41,7 @@
                             Select
                         </v-btn>
                     </template>
-                    <course-detail @open-dialog="(val: boolean) => dialog = val" :course="props.name" :semester="selectedSemester" ></course-detail>
+                    <course-detail @open-dialog="(val: boolean) => dialog = val" :course="props.name" :semester="semester" ></course-detail>
                 </v-dialog>
             </div>
         </v-card-actions>
@@ -53,24 +53,33 @@ import { ref } from 'vue';
 
 const dialog = ref(false);
 
+const imageUrls = [
+    'https://images.unsplash.com/photo-1542903660-eedba2cda473?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1587620931276-d97f425f62b9?q=80&w=3131&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=3155&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+]
+
 const props = defineProps({
     id: {
         type: Number,
         default: 0
     },
-    department: {
-        type: String,
-        default: ''
-    },
     name: {
         type: String,
         required: true
     },
-    semesters: {
-        type: Array<String>,
-        default: []
+    code: {
+        type: String,
+        required: true
+    },
+    group: {
+        type: String,
+        required: true
+    },
+    semester: {
+        type: String,
+        required: true
     }
 });
-
-const selectedSemester = ref<String>(props.semesters.at(0) ?? '')
 </script>

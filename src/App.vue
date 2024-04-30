@@ -3,16 +3,28 @@
     <v-main>
       <side-bar v-if="isAuthenticated"></side-bar>
       <router-view />
+
+      <base-alert v-for="(item, idx) in notify.notifications.value"
+        :key="idx"
+        :type="item.type"
+        :id="item.id"
+        :message="item.message"
+        :autoClose="item.autoClose"
+        :duration="item.duration"
+        @close="() => { console.log('Close'); notify.removeNotification(item.id); }" >
+      </base-alert>
     </v-main>
   </v-app>
 </template>
 
 <script setup lang="ts">
-import router from './utils/router';
+import useNotifications from './utils/notification';
 import useAuth from './services/auth';
-import { computed } from 'vue';
+import { computed, provide } from 'vue';
 
 const auth = useAuth();
+
+const notify = useNotifications();
 
 const isAuthenticated = computed<boolean>(() => {
   // In case page is reloaded, get username/password from session storage
@@ -25,5 +37,7 @@ const isAuthenticated = computed<boolean>(() => {
 
   return username !== null && password !== null;
 })
+
+provide("create-notification", notify.createNotification);
   //
 </script>

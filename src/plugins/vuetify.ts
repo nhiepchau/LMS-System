@@ -32,7 +32,9 @@ export default createVuetify({
           sub: '#4B7BEC',
           'dark-green': '#2A4849',
           'dark-grey': '#6E7787',
-          'light-blue': '#DCE6FB'
+          'light-blue': '#DCE6FB',
+          'sub-grey': '#BCC1CA',
+          'light-grey-1': '#DEE1E6'
         }
       }
     }

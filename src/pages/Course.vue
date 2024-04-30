@@ -11,7 +11,13 @@
         </div>
 
         <div class="w-100 mt-10 d-flex">
-            <course-item class="mr-4" v-for="(course, index) in courses" :key="index" :id="index" :department="course.department" :name="course.name" :semesters="course.semesters"></course-item>
+            <class-item class="mr-4" v-for="(course, index) in courses" 
+                :key="index" 
+                :id="index" 
+                :name="course.name" 
+                :code="course.code" 
+                :group="course.group"
+                :semester="course.semester"></class-item>
         </div>
     </v-container>
 </template>
@@ -21,23 +27,23 @@ import http from '@/utils/http';
 import { onMounted, ref } from 'vue';
 import router from '@/utils/router';
 
-const courses = ref<Array<{ name: String, semesters: Array<string>, department: String }>>();
+const courses = ref<Array<{ name: String, code: String, group: String, semester: String }>>();
 
-async function getCourses() {
-    const { data } = await http.get('/api/courses');
-
-    console.log('Courses ', data)
-
-    courses.value = data.map((x: { course_name: any; course_code: any; department: any }) => {
+async function getClasses() {
+    const { data } = await http.get('/api/classes');
+    courses.value = data.map((x: { course: any; class_code: any; group: any }) => {
+        const [course_code, course_name] = x.course.split('-');
+        const semester = x.class_code.split('_')[0].substring(2);
         return {
-            name: `${x.course_code} - ${x.course_name}`,
-            semesters: ['HK231'],
-            department: x.department
+            name: course_name,
+            code: course_code,
+            group: x.group,
+            semester: semester
         }
-    });
+    })
 } 
 
 onMounted(() => {
-    getCourses();
+    getClasses();
 })
 </script>

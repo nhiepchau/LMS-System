@@ -52,6 +52,10 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits<{
+  (e: 'uploadFile', value: File): void
+}>()
+
 onMounted(() => {
   var classes = manageCourse.getValidClasses();
 
@@ -76,6 +80,8 @@ async function getFiles() {
 
     if (file) {
       manageCourse.setClassFile(props.idx, file, props.type);
+
+      emit('uploadFile', file);
     }
   }
 }

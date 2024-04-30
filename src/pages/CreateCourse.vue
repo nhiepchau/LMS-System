@@ -11,7 +11,7 @@
         <div class="mt-2 text-right">
             <v-btn
                 :disabled="page <= 0"
-                variant="elevated"
+                variant="plain"
                 text="Back"
                 prepend-icon="fas fa-arrow-left"
                 class="text-none bg-light-blue text-sub mr-3"
@@ -19,7 +19,7 @@
             ></v-btn>
             <v-btn
                 :disabled="page + 1 >= maxPages"
-                variant="elevated"
+                variant="plain"
                 append-icon="fas fa-arrow-right"
                 class="text-none bg-primary"
                 text="Next"

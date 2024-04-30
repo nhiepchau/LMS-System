@@ -3,7 +3,7 @@
         <thead class="bg-grey">
             <tr>
                 <th class="text-left">LO</th>
-                <th class="text-left" v-for="(lab, index) in labs" :key="index">{{ lab }}</th>
+                <th class="text-center" v-for="(lab, index) in labs" :key="index">{{ lab }}</th>
                 <th class="text-center w-25">Total</th>
                 <th class="text-center">Threshold</th>
                 <th class="text-center">Edit</th>
@@ -12,7 +12,18 @@
         <tbody>
             <tr v-for="(subLO, idx) in data.weight" :key="idx">
                 <td>{{ subLO.subLO }}</td>
-                <td v-for="(lab, i) in labs" :key="i" >{{ subLO.labs[i] * 100 }}%</td>
+                <td v-for="(lab, i) in labs" :key="i" >
+                    <!-- {{ subLO.labs[i] * 100 }}% -->
+                    <v-text-field 
+                        :model-value="`${subLO.labs[i] * 100}%`" 
+                        readonly
+                        density="compact"
+                        flat
+                        variant="solo"
+                        class="my-1"
+                    >
+                    </v-text-field>
+                </td>
                 <td>
                     <v-progress-linear
                         :model-value="totalWeight(subLO.labs)"
@@ -30,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
 
 const labs = ref<Array<string>>(['Lab 1', 'Lab 2', 'Lab 3', 'Lab 4']);
 
@@ -87,3 +98,9 @@ const totalWeight = (arr: number[]): number => {
     return sum * 100;
 };
 </script>
+
+<style scoped>
+.v-input--horizontal {
+    grid-template-areas: none !important;
+}
+</style>

@@ -8,6 +8,7 @@ const useCourse = defineStore('course', {
             selectedCourse: {
                 CourseName: '',
                 Semester: '',
+                CourseCode: '',
                 NumOfLabs: 0,
                 Classes: [
                     {
@@ -18,6 +19,9 @@ const useCourse = defineStore('course', {
             } as CourseModel
         }
     },
+
+    // Warning: semester is an attribute of class, not course -> in UI, we allow user
+    // to add multiple classes in case mapping to same course and semester
 
     getters: {
         getCourse: (state) => state.selectedCourse,

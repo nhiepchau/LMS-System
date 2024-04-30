@@ -17,7 +17,7 @@
                             {{ val.Name }}
                         </v-tab>
                     </v-tabs>
-                    <v-window v-model="verticalTab" class="border-sm rounded w-75 pa-4" style="height: 250px;" >
+                    <v-window v-model="verticalTab" class="border-sm rounded w-75 pa-4" style="height: 250px; ; margin-top: -70px;" >
                         <v-window-item v-for="(val, idx) in classes" :key="idx" :value="val.Name">
                             <div class="d-flex flex-row text-primary">
                                 <v-icon class="mr-2">fas fa-file-alt</v-icon>
@@ -39,27 +39,28 @@
             </div>
 
             <div class="d-flex flex-row mt-5">
-                    <v-tabs direction="vertical" v-model="verticalTab" class="w-25" >
-                        <v-tab v-for="(val, idx) in classes" :key="idx" :value="val.Name">
-                            {{ val.Name }}
-                        </v-tab>
-                    </v-tabs>
-                    <v-window v-model="verticalTab" class="border-sm rounded w-75 pa-4" style="height: 250px;">
-                        <v-window-item v-for="(val, idx) in classes" :key="idx" :value="val.Name">
-                            <h3 class="text-primary">Learning outcome</h3>
-                            <p class="text-dark-grey text-sm-body-2">Loading learning outcome details from your data</p>
-                            <div class="text-center mt-10">
-                                <v-progress-circular
-                                    :size="70"
-                                    :width="7"
-                                    color="dark-grey"
-                                    indeterminate
-                                ></v-progress-circular>
-                                <p class="mt-5">Just one second</p>
-                            </div>
-                        </v-window-item>
-                    </v-window>
-                </div>
+                <v-tabs direction="vertical" v-model="verticalTab" class="w-25" >
+                    <v-tab v-for="(val, idx) in classes" :key="idx" :value="val.Name">
+                        {{ val.Name }}
+                    </v-tab>
+                </v-tabs>
+                <v-window v-model="verticalTab" class="border-sm rounded w-75 pa-4" style="height: 400px; margin-top: -70px;">
+                    <v-window-item v-for="(val, idx) in classes" :key="idx" :value="val.Name">
+                        <h3 class="text-primary">Learning outcome distribution</h3>
+                        <p class="text-dark-grey text-sm-body-2">Loading learning outcome details from your data</p>
+                        <!-- <div class="text-center mt-10">
+                            <v-progress-circular
+                                :size="70"
+                                :width="7"
+                                color="dark-grey"
+                                indeterminate
+                            ></v-progress-circular>
+                            <p class="mt-5">Just one second</p>
+                        </div> -->
+                        <distribution-form></distribution-form>
+                    </v-window-item>
+                </v-window>
+            </div>
         </v-window-item>
     </v-window>
 </template>
