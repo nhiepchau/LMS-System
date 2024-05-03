@@ -6,7 +6,7 @@
             <h1 class="text-primary">All classes</h1>
             <div>
                 <v-btn variant="outlined" class="text-none text-primary mr-3" prepend-icon="fas fa-file-download">Export</v-btn>
-                <v-btn @click.prevent="() => router.push('/class/create')" variant="flat" height="40" class="text-none bg-primary text-white" prepend-icon="fas fa-plus">New classes</v-btn>
+                <v-btn to="/class/create" variant="flat" height="40" class="text-none bg-primary text-white" prepend-icon="fas fa-plus">New classes</v-btn>
             </div>
         </div>
 
@@ -15,7 +15,8 @@
                 :key="index" 
                 :id="index" 
                 :name="course.name" 
-                :code="course.code" 
+                :course_code="course.course_code"
+                :class_code="course.class_code"
                 :group="course.group"
                 :semester="course.semester"></class-item>
         </div>
@@ -25,9 +26,8 @@
 <script setup lang="ts">
 import http from '@/utils/http';
 import { onMounted, ref } from 'vue';
-import router from '@/utils/router';
 
-const courses = ref<Array<{ name: String, code: String, group: String, semester: String }>>();
+const courses = ref<Array<{ name: String, course_code: String, class_code: String, group: String, semester: String }>>();
 
 async function getClasses() {
     const { data } = await http.get('/api/classes');
@@ -36,7 +36,8 @@ async function getClasses() {
         const semester = x.class_code.split('_')[0].substring(2);
         return {
             name: course_name,
-            code: course_code,
+            course_code: course_code,
+            class_code: x.class_code,
             group: x.group,
             semester: semester
         }

@@ -42,6 +42,9 @@
                 </v-btn>
 
                 <p v-if="!authenticated" class="text-error text-sm-center mt-4">Incorrect username or password!</p>
+
+                <v-divider class="mt-8 mb-2"></v-divider>
+                <p class="text-center">If you're student, please activate account before login at <a v-bind:href="'/register/'">Activate page</a></p>
             </v-form>
         </v-card>
     </v-container>

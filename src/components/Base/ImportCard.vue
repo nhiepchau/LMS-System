@@ -13,8 +13,16 @@
                     <v-icon class="mr-2">fas fa-file-alt</v-icon>
                     <h3>Exercise file</h3>
                 </div>
-                <div class="mt-15">
+                <div class="mt-15" v-if="!loading">
                     <file-input :idx="0" type="Exercise" @upload-file="(value: File) => file = value" ></file-input>
+                </div>
+                <div v-else class="text-center mt-10">
+                    <v-progress-circular
+                        :size="100"
+                        :width="7"
+                        color="primary"
+                        indeterminate
+                    ></v-progress-circular>
                 </div>
             </div>
         </v-card-item>
@@ -25,12 +33,14 @@
                 text="Close"
                 class="text-none bg-blue-lighten-5 text-blue-darken-2"
                 @click="emit('openImportCard', false)"
+                :disabled="loading"
             ></v-btn>
 
             <v-btn
                 class="text-none bg-primary"
                 text="Save"
                 @click="handleUploadFile"
+                :disabled="loading"
             ></v-btn>
         </v-card-actions>
     </v-card>
@@ -46,31 +56,49 @@ const emit = defineEmits<{
     (e: 'openImportCard', value: boolean): void
 }>();
 
+const props = defineProps({
+    classId: {
+        type: Number,
+        required: true
+    }
+});
+
 const auth = useAuth();
 const file = ref<File>();
+const loading = ref(false);
 const createNotification = <CreateNotification>inject('create-notification');
+const baseUrl = import.meta.env.VITE_APP_API_URL
 
-async function handleUploadFile(value: File) {
-    emit('openImportCard', false)
+async function handleUploadFile() {
+    if (file.value) {
+        const formData = new FormData();
+        formData.append("exercise_file", file.value);
+        formData.append("class_code", `${props.classId}`);
 
-    const formData = new FormData();
-    formData.append("submission_file", value);
-    formData.append("class_code_id", "1");
-
-    console.log('FormData ', formData)
-    await axios.post('http://127.0.0.1:8000/api/submission/', formData,
-    {
-        headers: {
-            "Authorization": `Bearer ${auth.token}`,
-            "Content-Type": "multipart/form-data"
-        }
-    }).then(function(data) {
-        console.log('After send file: ', data);
-    }).catch(function() {
-        createNotification({
-            type: 'error',
-            message: "Something's wrong when uploading!"
+        console.log('FormData ', formData)
+        loading.value = true;
+        // Call API with type form-data
+        await axios.post(`${baseUrl}/api/exercise/`, formData,
+        {
+            headers: {
+                "Authorization": `Bearer ${auth.token}`,
+                "Content-Type": "multipart/form-data"
+            }
+        }).then(function(data) {
+            loading.value = false;
+            emit('openImportCard', false)
+            createNotification({
+                type: 'success',
+                message: `Uploaded file ${file.value?.name} successfully!`
+            })
+        }).catch(function() {
+            loading.value = false;
+            emit('openImportCard', false)
+            createNotification({
+                type: 'error',
+                message: "Something's wrong when uploading!"
+            })
         })
-    })
+    }
 }
 </script>

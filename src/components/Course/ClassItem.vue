@@ -23,7 +23,7 @@
                 flat
                 density="compact"
                 label="Class Code"
-                :model-value="props.code"
+                :model-value="props.course_code"
                 readonly
             ></v-text-field>
         </div>
@@ -32,7 +32,7 @@
         <v-card-actions>
             <v-spacer />
             <div class="mr-2">
-                <v-btn variant="outlined" width="75" class="text-none text-primary">
+                <v-btn :to="`/class/${props.class_code}`" variant="outlined" width="75" class="text-none text-primary">
                     View
                 </v-btn>
                 <v-dialog v-model="dialog">
@@ -50,8 +50,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const dialog = ref(false);
+const router = useRouter();
 
 const imageUrls = [
     'https://images.unsplash.com/photo-1542903660-eedba2cda473?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -69,7 +71,11 @@ const props = defineProps({
         type: String,
         required: true
     },
-    code: {
+    course_code: {
+        type: String,
+        required: true
+    },
+    class_code: {
         type: String,
         required: true
     },

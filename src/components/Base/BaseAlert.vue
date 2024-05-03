@@ -5,6 +5,8 @@
         v-model="alert"
         location="top"
         :color="getColorAlert()"
+        :timeout="autoClose ? duration : -1"
+        @update:model-value="emitCloseEvent"
     >
         <template v-slot:actions>
             <v-btn
@@ -19,9 +21,9 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
-const alert = ref<Boolean>(true)
+const alert = ref(true)
 
 const emit = defineEmits<{
     (e: "close"): void
@@ -59,21 +61,10 @@ const props = defineProps({
     }
 })
 
-onMounted(() => {
-    console.log('Open alert!!!', props);
-
-    if (props.autoClose) {
-        setTimeout(() => {
-            alert.value = false;
-            emitCloseEvent();
-        }, props.duration)
-    }
-})
-
 function emitCloseEvent() {
     alert.value = false;
 
-    if (alert.value !== true) {
+    if (!alert.value) {
         console.log('Close alert!!!')
         emit('close');
     }

@@ -8,7 +8,7 @@
             <v-col><course-info-item class="bg-green-lighten-4 text-dark-green" info="100" typeInfo="Submission Files"></course-info-item></v-col>
             <v-col><course-info-item class="bg-grey-lighten-3 text-dark-grey" info="1500" typeInfo="Total Students"></course-info-item></v-col>
             <v-col>
-                <v-btn class="w-100 bg-blue-lighten-5 h-100 text-center" variant="plain" @click.prevent="() => router.push('/class/create')">
+                <v-btn class="w-100 bg-blue-lighten-5 h-100 text-center" variant="plain" to="/class/create">
                     <div>
                         <v-icon size="large" >fas fa-circle-plus</v-icon>
                         <p class="mt-2 text-none">Add a new class</p>
@@ -26,7 +26,4 @@
 
 <script setup lang="ts">
 import http from '@/utils/http';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
 </script>
