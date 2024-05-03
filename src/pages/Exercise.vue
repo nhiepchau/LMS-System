@@ -85,9 +85,9 @@ async function getExercises() {
     })
 }
 
-onMounted(() => {
-    getClassDetail();
-    getExercises();
+onMounted(async () => {
+    await getClassDetail();
+    await getExercises();
 })
 
 function getColor(value: string) {
