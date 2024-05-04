@@ -1,7 +1,17 @@
 module.exports = {
     // options...
     devServer: {
-          proxy: 'http://103.56.162.106',
-          port: 8081
+          proxy: {
+            '^/api': {
+                target: 'http://103.56.162.106:8081/',
+                ws: true,
+                changeOrigin: true
+            },
+            '^/api-token-auth': {
+                target: 'http://103.56.162.106:8081/',
+                ws: true,
+                changeOrigin: true
+            },
+          }
       }
 }
