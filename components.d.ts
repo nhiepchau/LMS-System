@@ -21,6 +21,7 @@ declare module 'vue' {
     ImportCard: typeof import('./src/components/Base/ImportCard.vue')['default']
     LabContribution: typeof import('./src/components/Course/LabContribution.vue')['default']
     LabItem: typeof import('./src/components/Course/LabItem.vue')['default']
+    PerformanceChart: typeof import('./src/components/Statistics/PerformanceChart.vue')['default']
     RecentCourseItem: typeof import('./src/components/Course/RecentCourseItem.vue')['default']
     RecentList: typeof import('./src/components/Course/RecentList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
@@ -28,5 +29,6 @@ declare module 'vue' {
     SideBar: typeof import('./src/components/SideBar.vue')['default']
     SubmissionForm: typeof import('./src/components/Course/SubmissionForm.vue')['default']
     TopBar: typeof import('./src/components/TopBar.vue')['default']
+    UploadSubmission: typeof import('./src/components/Base/UploadSubmission.vue')['default']
   }
 }

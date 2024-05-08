@@ -57,7 +57,7 @@
                             ></v-progress-circular>
                             <p class="mt-5">Just one second</p>
                         </div> -->
-                        <distribution-form></distribution-form>
+                        <distribution-form :outcomes="outcomes" :classIdx="idx"></distribution-form>
                     </v-window-item>
                 </v-window>
             </div>
@@ -66,12 +66,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import useCourse from '@/services/course';
+import http from '@/utils/http';
 
 const tab = ref<String>('');
 const verticalTab = ref<String>('');
 
 const manageCourse = useCourse();
+const courseCode = manageCourse.selectedCourse.CourseCode;
 const classes = manageCourse.getValidClasses();
+const outcomes = ref<Array<{ pk: number, outcome_code: string, parent_outcome: string, threshold: number }>>();
+
+onMounted(() => {
+    getOutcomes();
+});
+
+async function getOutcomes() {
+    const { data } = await http.get(`/api/courses/${courseCode}/outcomes`);
+    outcomes.value = data.map((x: { pk: any, outcome_code: any, parent_outcome: any, threshold: any }) => {
+        return {
+            pk: x.pk,
+            outcome_code: x.outcome_code,
+            parent_outcome: x.parent_outcome,
+            threshold: x.threshold
+        }
+    })
+}
 </script>@/interface/CourseModel

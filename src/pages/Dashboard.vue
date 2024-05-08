@@ -1,7 +1,7 @@
 <template>
     <top-bar />
-    <v-container>
-        <h1>Dashboard</h1>
+    <v-container v-if="auth.user.role === 'Teacher'">
+        <h1 class="text-primary" >Dashboard</h1>
 
         <v-row class="mt-5">
             <v-col><course-info-item class="bg-blue-lighten-4 text-blue-darken-4" info="07" typeInfo="Classes" ></course-info-item></v-col>
@@ -22,8 +22,16 @@
             <bar-chart class="w-66 ml-4"></bar-chart>
         </div>
     </v-container>
+    <v-container v-else>
+        <h1 class="text-primary" >Learning Outcome Support</h1>
+        <div class="d-flex flex-row mt-5">
+            <performance-chart class="w-50"></performance-chart>
+        </div>
+    </v-container>
 </template>
 
 <script setup lang="ts">
-import http from '@/utils/http';
+import useAuth from '@/services/auth';
+
+const auth = useAuth();
 </script>

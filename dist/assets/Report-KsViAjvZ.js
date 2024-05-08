@@ -1,0 +1,1 @@
+import{_ as s,o as a,e as n,g as e,w as o,s as c,F as r,b as _,H as l}from"./index-Di_eUCWP.js";const f={},i=_("h1",null,"Exercises",-1);function d(m,p){const t=l;return a(),n(r,null,[e(t),e(c,null,{default:o(()=>[i]),_:1})],64)}const x=s(f,[["render",d]]);export{x as default};

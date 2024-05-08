@@ -1,1 +1,0 @@
-import{_ as n,o as a,e as s,g as e,w as o,s as c,F as _,b as r,H as l}from"./index-2v8kRtHD.js";const i={},f=r("h1",null,"Settings",-1);function d(m,u){const t=l;return a(),s(_,null,[e(t),e(c,null,{default:o(()=>[f]),_:1})],64)}const g=n(i,[["render",d]]);export{g as default};

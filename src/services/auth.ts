@@ -11,7 +11,7 @@ const useAuth = defineStore('auth', {
             token: null as string | null,
             username: null as string | null,
             password: null as string | null,
-            user: { name: '', role: '' } as UserInfo
+            user: { name: null as string | null, role: null as string | null } as UserInfo
         }
     },
     getters: {
@@ -24,10 +24,9 @@ const useAuth = defineStore('auth', {
             this.token = token;
         },
 
-        setUserInfo(token: string, user: UserInfo) {
-            this.token = token;
-            this.user.name = user.name;
-            this.user.role = user.role;
+        setUserInfo(user: string, role: string) {
+            this.user.name = user;
+            this.user.role = role;
         }
     }
 });

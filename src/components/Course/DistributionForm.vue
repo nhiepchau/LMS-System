@@ -14,7 +14,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(subLO, idx) in data.weight" :key="idx">
+                    <tr v-for="(subLO, idx) in data.weight.filter(x => x.subLO.substring(0, 5) == LO).sort(compareString)" :key="idx">
                         <td>{{ subLO.subLO }}</td>
                         <td v-for="(lab, i) in labs" :key="i" >
                             <!-- {{ subLO.labs[i] * 100 }}% -->
@@ -26,9 +26,12 @@
                                 class="my-1 text-sm-body-1"
                                 color="dark-grey"
                                 @update:model-value="value => {
-                                    var newArr = subLO.labs;
-                                    newArr[i] = parseInt(value);
-                                    data.weight[idx].labs = newArr
+                                    if (subLO.subLO.substring(0, 5) == tab) {
+                                        var newArr = subLO.labs;
+                                        newArr[i] = parseInt(value);
+                                        data.weight[idx].labs = newArr;
+                                        updateLatestLabs();
+                                    }
                                 }"
                             >
                             </v-text-field>
@@ -48,18 +51,30 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed } from 'vue';
-
-const LOs = ref<Array<string>>(['L.O.1', 'L.O.2', 'L.O.3', 'L.O.4']);
-const tab = ref<String>('');
-const labs = ref<Array<string>>(['Lab 1', 'Lab 2', 'Lab 3', 'Lab 4']);
+import LabModel from '@/interface/LabModel';
+import useCourse from '@/services/course';
+import { reactive, ref, computed, onMounted } from 'vue';
 
 const props = defineProps({
-    outcome: {
-        type: String,
-        default: ''
+    classIdx: {
+        type: Number,
+        required: true
+    },
+    outcomes: {
+        type: Array<{ pk: number, outcome_code: string, parent_outcome: string, threshold: number }>,
+        default: []
     }
 });
+
+function onlyUnique(value: any, index: number, self: any[]) {
+  return self.indexOf(value) === index;
+}
+
+const manageCourse = useCourse();
+const LOs = props.outcomes.map(x => x.parent_outcome).filter(onlyUnique);
+const tab = ref<String>('');
+const numOfLabs = manageCourse.selectedCourse.NumOfLabs;
+const labs = Array.from({length: numOfLabs}, (_, i) => i + 1).map(x => `Lab ${x}`);
 
 interface LabWeight {
     subLO: string,
@@ -71,30 +86,19 @@ interface Contribution {
     weight: LabWeight[]
 }
 
+function compareString (a: LabWeight, b: LabWeight) {
+    return ('' + a.subLO).localeCompare(b.subLO);
+}
+
 // Data about lab contribution
 const data : Contribution = reactive({
-    weight: [
-        {
-            subLO: 'L.O.1.1',
-            labs: [0, 0, 0, 0],
-            threshold: 5
-        },
-        {
-            subLO: 'L.O.1.2',
-            labs: [0, 0, 0, 0],
-            threshold: 7
-        },
-        {
-            subLO: 'L.O.1.3',
-            labs: [0, 0, 0, 0],
-            threshold: 5
-        },
-        {
-            subLO: 'L.O.1.4',
-            labs: [0, 0, 0, 0],
-            threshold: 8
+    weight: props.outcomes.map<LabWeight>(x => {
+        return {
+            subLO: x.outcome_code,
+            labs: Array<number>(numOfLabs),
+            threshold: x.threshold
         }
-    ]
+    }).sort(compareString)
 });
 
 // Methods
@@ -110,8 +114,43 @@ const totalWeight = computed(() => {
         result.push(sum)
     })
 
-    console.log(result)
     return result;
+});
+
+function updateLatestLabs() {
+    var newLabs = data.weight.flatMap<LabModel>(x => {
+        return x.labs.map<LabModel>((l, id) => {
+            return {
+                LabName: labs[id],
+                Outcome: x.subLO,
+                Threshold: x.threshold,
+                Contribution: l
+            }
+        });
+    });
+
+    console.log('New labs ', newLabs)
+
+    manageCourse.setLabs(props.classIdx, newLabs);
+}
+
+onMounted(() => {
+    let classVal = manageCourse.getValidClasses()[props.classIdx];
+    if (classVal.Labs.length > 0) {
+        var first = classVal.Labs.map<LabWeight>(lab => {
+            return {
+                subLO: lab.Outcome,
+                threshold: lab.Threshold,
+                labs: []
+            }
+        });
+
+        classVal.Labs.forEach(e => {
+            first.find(x => x.subLO == e.Outcome)?.labs.push(e.Contribution)
+        });
+
+        data.weight = first;
+    }
 });
 </script>
 

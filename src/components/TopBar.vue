@@ -20,8 +20,8 @@
                 <v-list-item
                     lines="two"
                     :prepend-avatar="avaUrl"
-                    subtitle="Professor"
-                    title="Minh Châu"
+                    :subtitle="auth.user.role"
+                    :title="auth.user.name"
                     v-bind="props"
                     class="width-full"
                 >
@@ -37,5 +37,9 @@
 </template>
 
 <script setup lang="ts">
-const avaUrl = "https://randomuser.me/api/portraits/women/81.jpg";
+import useAuth from '@/services/auth';
+
+const avaUrl = "https://www.shutterstock.com/image-vector/user-icon-trendy-flat-style-600nw-1697898655.jpg";
+
+const auth = useAuth();
 </script>

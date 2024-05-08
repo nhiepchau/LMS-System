@@ -70,18 +70,19 @@
                 Sign Up
                 </v-btn>
 
-                <p v-if="false" class="text-error text-sm-center mt-4">Incorrect username or password!</p>
+                <p v-if="errorMessage !== ''" class="text-error text-sm-center mt-4">{{ errorMessage }}</p>
             </v-form>
         </v-card>
     </v-container>
 </template>
 
 <script setup lang="ts">
-import useAuth from '@/services/auth';
+import http from '@/utils/http';
 import router from '@/utils/router';
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
+import { CreateNotification } from '@/utils/notification';
 
-const auth = useAuth();
+const createNotification = <CreateNotification>inject('create-notification');
 
 // Variables
 const form = ref(false);
@@ -91,6 +92,7 @@ const email = ref<String>("");
 const password = ref<String>("");
 const confirmedPassword = ref<String>("");
 const loading = ref(false);
+const errorMessage = ref<String>("");
 
 const passwordRules = [
     function (value: any) {
@@ -116,11 +118,30 @@ async function onSubmit () {
 
     loading.value = true
 
-    setTimeout(() => {
-        auth.setLogin(username.value.toString(), password.value.toString(), '')
+    setTimeout(async () => {
+        // Authenticate account
+        const payload = await http.post('/api/users/register/', { email: email.value, username: username.value, password: password.value, student_id: studentId.value, first_name: "", last_name: "", is_teacher: false, phone_number: "", major: "" })
+            .then(function(response) {
+                loading.value = false;
 
-        // Redirect to homepage
-        router.push({ name: 'homepage' });
+                if (response.data.error) {
+                    errorMessage.value = response.data.error;
+                }
+                else {
+                    createNotification({
+                        type: 'success',
+                        message: `Activate new account for student successfully!`
+                    })
+
+                    setTimeout(() => {
+                        // Redirect to homepage
+                        router.push({ name: 'login' });
+                    }, 1000)
+                }
+            })
+            .catch(() => {
+                loading.value = false;
+            });
     }, 1000)
 }
 function required (v: String) {

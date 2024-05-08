@@ -7,19 +7,19 @@
         <v-col cols="6">
             <v-combobox
                 label="Course Name"
-                :items="['Programming Fundamentals', 'Data Structure & Algorithm', 'Web Development', 'Crypto & Cybersecurity']"
+                :items="courses?.map(x => x.course_name)"
                 variant="outlined"
                 color="sub"
                 bg-color="#F3F4F6"
                 density="comfortable"
                 v-model="courseName"
-                @update:model-value="value => manageCourse.editCourse('CourseName', value ?? '')"
+                @update:model-value="value => updateCourse(value)"
             ></v-combobox>
         </v-col>
         <v-col cols="3">
             <v-combobox
                 label="Semester"
-                :items="['HK232', 'HK231', 'HK222', 'HK221']"
+                :items="semesters?.map(x => x.semester_name)"
                 variant="outlined"
                 color="sub"
                 bg-color="#F3F4F6"
@@ -94,12 +94,16 @@
 import useCourse from '@/services/course'
 import { reactive, onMounted, ref } from 'vue';
 import ClassModel from '@/interface/ClassModel';
+import http from '@/utils/http';
 
 const manageCourse = useCourse();
 
 const courseName = ref<string>('');
 const semester = ref<string>('');
 const numLabs = ref<number>();
+
+const courses = ref<Array<{ pk: number, course_code: string, course_name: string }>>();
+const semesters = ref<Array<{ pk: number, semester_name: string }>>();
 
 const state = reactive({
     classes: [
@@ -111,6 +115,8 @@ const state = reactive({
 })
 
 onMounted(() => {
+    getCourses();
+    getCourseSemesters();
     var classes = manageCourse.getValidClasses();
 
     if (classes.length > 0) {
@@ -122,8 +128,35 @@ onMounted(() => {
     numLabs.value = manageCourse.selectedCourse.NumOfLabs
 });
 
+async function getCourses() {
+    const { data } = await http.get('/api/courses');
+    courses.value = data.map((x: { pk: any, course_code: any, course_name: any }) => {
+        return {
+            pk: x.pk,
+            course_code: x.course_code,
+            course_name: x.course_name,
+        }
+    })
+}
+
+async function getCourseSemesters() {
+    const { data } = await http.get('/api/courses/semesters');
+    semesters.value = data.map((x: { pk: any, semester_name: any }) => {
+        return {
+            pk: x.pk,
+            semester_name: x.semester_name,
+        }
+    })
+}
+
 function addClass() {
-    state.classes.push({ Name: '', Default: false });
-    manageCourse.addClass({ Name: '', Default: false })
+    state.classes.push({ Name: '', Default: false, Labs: [] });
+    manageCourse.addClass({ Name: '', Default: false, Labs: [] })
+}
+
+function updateCourse(value: string | undefined) {
+    let course = value ?? '';
+    manageCourse.editCourse('CourseName', course);
+    manageCourse.editCourse('CourseCode', courses.value?.find(x => x.course_name == course)?.course_code ?? '')
 }
 </script>@/interface/CourseModel

@@ -76,9 +76,8 @@ async function onSubmit () {
         const usernameVal = username.value.toString();
         const passwordVal = password.value.toString();
         // Authenticate account
-        const payload = await http.post('/api-token-auth/', { username: username.value, password: password.value })
+        const payload = await http.post('/api/users/login/', { username: username.value, password: password.value })
             .then(function(response) {
-                console.log('JWT Token ', response.data.access);
                 loading.value = false;
                 // Set new header for axios
                 http.interceptors.request.use(
@@ -91,10 +90,16 @@ async function onSubmit () {
                 // Save login info
                 auth.setLogin(usernameVal, passwordVal, response.data.access);
 
+                // Save user info
+                const user = response.data.user;
+                auth.setUserInfo(`${user.first_name} ${user.last_name}`, user.is_teacher ? 'Teacher' : 'Student')
+
                 // Save into session storage
                 sessionStorage.setItem('username', usernameVal);
                 sessionStorage.setItem('password', passwordVal);
                 sessionStorage.setItem('token', response.data.access);
+                sessionStorage.setItem('fullname', `${user.first_name} ${user.last_name}`);
+                sessionStorage.setItem('role', user.is_teacher ? 'Teacher' : 'Student');
 
                 // Redirect to homepage
                 router.push({ name: 'homepage' });

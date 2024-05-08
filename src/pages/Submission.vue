@@ -11,7 +11,7 @@
                     <template v-slot:activator="{ props: activatorProps }">
                         <v-btn variant="flat" v-bind="activatorProps" class="text-none bg-primary text-white" prepend-icon="fas fa-file-upload">Import</v-btn>
                     </template>
-                    <import-card :classId="class_id" @open-import-card="(val: boolean) => { dialog = val; }" ></import-card>
+                    <upload-submission :classId="class_id" @open-submission-card="(val: boolean) => { dialog = val; }" ></upload-submission>
                 </v-dialog>
             </div>
         </div>

@@ -6,7 +6,6 @@
         <div class="border-sm px-3 py-5 rounded mt-4">
             <create-course-form v-if="page === 0" ></create-course-form>
             <submission-form v-if="page === 1"></submission-form>
-            <analysis-form v-if="page === 2"></analysis-form>
         </div>
         <div class="mt-2 text-right">
             <v-btn
@@ -18,12 +17,19 @@
                 @click.prevent="page--"
             ></v-btn>
             <v-btn
-                :disabled="page + 1 >= maxPages"
+                v-if="page + 1 < maxPages"
                 variant="plain"
                 append-icon="fas fa-arrow-right"
                 class="text-none bg-primary"
                 text="Next"
                 @click.prevent="page++"
+            ></v-btn>
+            <v-btn
+                v-if="page + 1 >= maxPages"
+                variant="plain"
+                append-icon="fas fa-arrow-right"
+                class="text-none bg-primary"
+                text="Finish"
             ></v-btn>
         </div>
     </v-container>
@@ -33,5 +39,5 @@
 import { ref } from 'vue';
 
 const page = ref<number>(0);
-const maxPages = 3;
+const maxPages = 2;
 </script>

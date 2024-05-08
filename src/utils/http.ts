@@ -7,7 +7,7 @@ const token = sessionStorage.getItem('token') ?? '';
 const http = axios.create({
     baseURL: import.meta.env.VITE_APP_API_URL,
     headers: {
-        "Authorization": `Bearer ${token}`,
+        "Authorization": token ? `Bearer ${token}` : '',
         "Content-Type": "application/json"
     }
 });

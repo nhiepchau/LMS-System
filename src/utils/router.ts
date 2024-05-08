@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { RouteLocationNormalized, createRouter, createWebHistory } from "vue-router";
 import Dashboard from "@/pages/Dashboard.vue";
 import useAuth from "@/services/auth";
 
@@ -19,15 +19,18 @@ const router = createRouter({
                 { path: ':class_code', component: () => import("@/pages/Class.vue") },
                 { path: ':class_code/exercise', component: () => import("@/pages/Exercise.vue") },
                 { path: ':class_code/submission', component: () => import("@/pages/Submission.vue") }
-            ]
+            ],
+            beforeEnter: [checkRole]
         },
         {
             path: '/outcome',
-            component: () => import("@/pages/Outcome.vue")
+            component: () => import("@/pages/Outcome.vue"),
+            beforeEnter: [checkRole]
         },
         {
             path: '/report',
-            component: () => import("@/pages/Report.vue")
+            component: () => import("@/pages/Report.vue"),
+            beforeEnter: [checkRole]
         },
         {
             path: '/notification',
@@ -49,10 +52,18 @@ const router = createRouter({
         },
         {
             path: '/:pathMatch(.*)*',
+            name: 'notfound',
             component: () => import("@/pages/NotFound.vue")
         }
     ]
 });
+
+function checkRole(to: RouteLocationNormalized) {
+    const auth = useAuth();
+    if (auth.user.role !== 'Teacher') {
+        return { path: to.path, name: 'notfound' };
+    }
+}
 
 router.beforeEach((to, from) => {
     const auth = useAuth();

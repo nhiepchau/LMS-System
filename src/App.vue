@@ -32,8 +32,11 @@ const isAuthenticated = computed<boolean>(() => {
   const username = auth.username ?? sessionStorage.getItem('username');
   const password = auth.password ?? sessionStorage.getItem('password');
   const token = auth.token ?? sessionStorage.getItem('token');
+  const fullname = auth.user.name ?? sessionStorage.getItem('fullname');
+  const role = auth.user.role ?? sessionStorage.getItem('role');
 
   auth.setLogin(username, password, token);
+  auth.setUserInfo(fullname, role);
 
   return username !== null && password !== null;
 })

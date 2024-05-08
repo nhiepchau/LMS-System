@@ -1,7 +1,7 @@
 <template>
     <div class="pa-4 border-sm rounded-lg">
         <div class="d-flex flex-row justify-space-between w-100" v-bind="$attrs">
-            <h3 class="my-auto">Statistics</h3>
+            <h3 class="my-auto">Student performance report</h3>
             <v-btn variant="plain" class="text-none text-blue-lighten-2" >View all</v-btn>
         </div>
 
@@ -23,19 +23,24 @@ import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, Li
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 const chartData = {
-    labels: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
+    labels: [ 'LO1', 'LO2', 'LO3', 'LO4' ],
     datasets: [
         {
             label: 'Data One',
             backgroundColor: '#222E50',
-            data: [40, 20, 12, 18, 0, 50, 35, 28, 5, 38]
+            data: [40, 20, 12, 18]
+        },
+        {
+            label: 'Data Two',
+            backgroundColor: '#C8D6F9',
+            data: [60, 80, 88, 82]
         }
     ]
 }
 
-const chartOptions = {
+const chartOptions: any = {
     responsive: true,
-    maintainAspectRatio: true,
+    indexAxis: 'y'
 }
 
 </script>

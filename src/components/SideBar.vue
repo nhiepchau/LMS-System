@@ -10,13 +10,13 @@
             </template>
           </v-list-item>
 
-          <v-list-item title="Classes" value="classes" to="/class" >
+          <v-list-item title="Classes" value="classes" to="/class" v-if="auth.user.role === 'Teacher'" >
             <template v-slot:prepend>
               <v-icon size="md">fas fa-book</v-icon>
             </template>
           </v-list-item>
 
-          <v-list-item title="Reports" value="reports" to="/report">
+          <v-list-item title="Reports" value="reports" to="/report" v-if="auth.user.role === 'Teacher'">
             <template v-slot:prepend>
               <v-icon size="md">fas fa-chart-pie</v-icon>
             </template> 
@@ -42,10 +42,9 @@
 import useAuth from '@/services/auth';
 import router from '@/utils/router';
 
+const auth = useAuth();
 function onLogOut() {
   sessionStorage.clear();
-
-  const auth = useAuth();
   auth.setLogin(null, null, null);
 
   router.push({ name: 'login' });

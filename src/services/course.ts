@@ -1,6 +1,7 @@
 import CourseModel from "@/interface/CourseModel";
 import ClassModel from "@/interface/ClassModel";
 import { defineStore } from "pinia";
+import LabModel from "@/interface/LabModel";
 
 const useCourse = defineStore('course', {
     state: () => {
@@ -13,7 +14,8 @@ const useCourse = defineStore('course', {
                 Classes: [
                     {
                         Name: '',
-                        Default: false
+                        Default: false,
+                        Labs: []
                     }
                 ]
             } as CourseModel
@@ -32,12 +34,16 @@ const useCourse = defineStore('course', {
         }
     },
     actions: {
-        editCourse(attr: 'CourseName' | 'Semester' | 'NumOfLabs', value: string | number) {
+        editCourse(attr: 'CourseName' | 'Semester' | 'NumOfLabs' | 'CourseCode', value: string | number) {
             let course = this.selectedCourse;
 
             switch (attr) {
                 case 'CourseName':
                     course.CourseName = value.toString();
+                    break;
+
+                case 'CourseCode':
+                    course.CourseCode = value.toString();
                     break;
 
                 case 'Semester':
@@ -48,6 +54,13 @@ const useCourse = defineStore('course', {
                     if (typeof (value) === 'number') {
                         course.NumOfLabs = value
                     }
+            }
+        },
+
+        setLabs(classIdx: number, labs: LabModel[]) {
+            let classVal = this.selectedCourse.Classes[classIdx];
+            if (classVal) {
+                this.selectedCourse.Classes[classIdx].Labs = labs
             }
         },
 

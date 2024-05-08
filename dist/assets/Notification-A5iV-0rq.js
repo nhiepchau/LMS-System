@@ -1,1 +1,0 @@
-import{_ as a,o,e as n,g as e,w as s,s as c,F as _,b as r,H as i}from"./index-2v8kRtHD.js";const l={},f=r("h1",null,"Notifications",-1);function d(m,u){const t=i;return o(),n(_,null,[e(t),e(c,null,{default:s(()=>[f]),_:1})],64)}const h=a(l,[["render",d]]);export{h as default};

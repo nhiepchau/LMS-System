@@ -4,17 +4,17 @@
             <div class="d-flex flex-row text-primary mb-2">
                 <h2 class="my-auto">Import new file</h2>
                 <v-icon size="md" class="ml-2 my-auto">fas fa-chevron-right</v-icon>
-                <v-chip class="ml-4 my-auto">Exercises</v-chip>
+                <v-chip class="ml-4 my-auto">Submissions</v-chip>
             </div>
             <v-divider />
-            <p class="mt-4">Please import more question data for the student </p>
+            <p class="mt-4">Please import more submission data for the class {{ route.params.class_code.toString().substring(6) }}</p>
             <div class="border-sm rounded pa-4 my-4 mx-auto" style="height: 250px;">
                 <div class="d-flex flex-row text-primary">
                     <v-icon class="mr-2">fas fa-file-alt</v-icon>
-                    <h3>Exercise file</h3>
+                    <h3>Submission file</h3>
                 </div>
                 <div class="mt-15" v-if="!loading">
-                    <file-input :idx="0" type="Exercise" @upload-file="(value: File) => file = value" ></file-input>
+                    <file-input :idx="0" type="Submission" @upload-file="(value: File) => file = value" ></file-input>
                 </div>
                 <div v-else class="text-center mt-10">
                     <v-progress-circular
@@ -32,7 +32,7 @@
             <v-btn
                 text="Close"
                 class="text-none bg-blue-lighten-5 text-blue-darken-2"
-                @click="emit('openImportCard', false)"
+                @click="emit('openSubmissionCard', false)"
                 :disabled="loading"
             ></v-btn>
 
@@ -54,7 +54,7 @@ import { inject, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 const emit = defineEmits<{
-    (e: 'openImportCard', value: boolean): void
+    (e: 'openSubmissionCard', value: boolean): void
 }>();
 
 const props = defineProps({
@@ -74,13 +74,13 @@ const baseUrl = import.meta.env.VITE_APP_API_URL
 async function handleUploadFile() {
     if (file.value) {
         const formData = new FormData();
-        formData.append("exercise_file", file.value);
+        formData.append("submission_file", file.value);
         formData.append("class_code", `${props.classId}`);
 
         console.log('FormData ', formData)
         loading.value = true;
         // Call API with type form-data
-        await axios.post(`${baseUrl}/api/classes/${route.params.class_code}/exercises/upload`, formData,
+        await axios.post(`${baseUrl}/api/classes/${route.params.class_code}/submissions/upload`, formData,
         {
             headers: {
                 "Authorization": `Bearer ${auth.token}`,
@@ -88,14 +88,14 @@ async function handleUploadFile() {
             }
         }).then(function(data) {
             loading.value = false;
-            emit('openImportCard', false)
+            emit('openSubmissionCard', false)
             createNotification({
                 type: 'success',
-                message: `Uploaded file ${file.value?.name} successfully!`
+                message: `Sent file ${file.value?.name} successfully! Please wait few minutes for processing and analyzing data!`
             })
         }).catch(function() {
             loading.value = false;
-            emit('openImportCard', false)
+            emit('openSubmissionCard', false)
             createNotification({
                 type: 'error',
                 message: "Something's wrong when uploading!"

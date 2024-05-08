@@ -40,12 +40,12 @@ const items = ref<BreadCrumbItem[]>([
         color: '',
         disabled: true
     },
-    {
-        title: 'Analysis',
-        icon: 'fas fa-chart-pie',
-        color: '',
-        disabled: true
-    }
+    // {
+    //     title: 'Analysis',
+    //     icon: 'fas fa-chart-pie',
+    //     color: '',
+    //     disabled: true
+    // }
 ]);
 
 watch(() => props.activeIdx, (newIdx, oldIdx) => {
