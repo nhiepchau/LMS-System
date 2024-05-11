@@ -14,7 +14,7 @@ const router = createRouter({
             path: '/class',
             name: 'class',
             children: [
-                { path: '', component: () => import("@/pages/Course.vue") },
+                { path: '', component: () => import("@/pages/Course.vue"), name: 'class-home' },
                 { path: 'create', component: () => import("@/pages/CreateCourse.vue") },
                 { path: ':class_code', component: () => import("@/pages/Class.vue") },
                 { path: ':class_code/exercise', component: () => import("@/pages/Exercise.vue") },

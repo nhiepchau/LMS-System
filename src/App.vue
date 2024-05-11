@@ -2,7 +2,7 @@
   <v-app>
     <v-main>
       <side-bar v-if="isAuthenticated"></side-bar>
-      <router-view />
+      <router-view :key="$route.path" />
 
       <base-alert v-for="(item, idx) in notify.notifications.value"
         :key="idx"
@@ -34,9 +34,10 @@ const isAuthenticated = computed<boolean>(() => {
   const token = auth.token ?? sessionStorage.getItem('token');
   const fullname = auth.user.name ?? sessionStorage.getItem('fullname');
   const role = auth.user.role ?? sessionStorage.getItem('role');
+  const email = auth.user.email ?? sessionStorage.getItem('email');
 
   auth.setLogin(username, password, token);
-  auth.setUserInfo(fullname, role);
+  auth.setUserInfo(fullname, role, email);
 
   return username !== null && password !== null;
 })

@@ -26,6 +26,7 @@
                                 class="my-1 text-sm-body-1"
                                 color="dark-grey"
                                 @update:model-value="value => {
+                                    console.log('Active tab ', tab, subLO.subLO);
                                     if (subLO.subLO.substring(0, 5) == tab) {
                                         var newArr = subLO.labs;
                                         newArr[i] = parseInt(value);

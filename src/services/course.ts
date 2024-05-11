@@ -9,6 +9,7 @@ const useCourse = defineStore('course', {
             selectedCourse: {
                 CourseName: '',
                 Semester: '',
+                SemesterId: 0,
                 CourseCode: '',
                 NumOfLabs: 0,
                 Classes: [
@@ -34,7 +35,7 @@ const useCourse = defineStore('course', {
         }
     },
     actions: {
-        editCourse(attr: 'CourseName' | 'Semester' | 'NumOfLabs' | 'CourseCode', value: string | number) {
+        editCourse(attr: 'CourseName' | 'Semester' | 'NumOfLabs' | 'CourseCode' | 'SemesterId', value: string | number) {
             let course = this.selectedCourse;
 
             switch (attr) {
@@ -48,6 +49,12 @@ const useCourse = defineStore('course', {
 
                 case 'Semester':
                     course.Semester = value.toString();
+                    break;
+
+                case 'SemesterId':
+                    if (typeof (value) === 'number') {
+                        course.SemesterId = value
+                    }
                     break;
 
                 case 'NumOfLabs':

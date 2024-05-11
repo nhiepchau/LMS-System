@@ -92,7 +92,7 @@ async function onSubmit () {
 
                 // Save user info
                 const user = response.data.user;
-                auth.setUserInfo(`${user.first_name} ${user.last_name}`, user.is_teacher ? 'Teacher' : 'Student')
+                auth.setUserInfo(`${user.first_name} ${user.last_name}`, user.is_teacher ? 'Teacher' : 'Student', user.email)
 
                 // Save into session storage
                 sessionStorage.setItem('username', usernameVal);
@@ -100,6 +100,7 @@ async function onSubmit () {
                 sessionStorage.setItem('token', response.data.access);
                 sessionStorage.setItem('fullname', `${user.first_name} ${user.last_name}`);
                 sessionStorage.setItem('role', user.is_teacher ? 'Teacher' : 'Student');
+                sessionStorage.setItem('email', user.email);
 
                 // Redirect to homepage
                 router.push({ name: 'homepage' });

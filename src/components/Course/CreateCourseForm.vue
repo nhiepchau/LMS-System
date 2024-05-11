@@ -25,7 +25,7 @@
                 bg-color="#F3F4F6"
                 density="comfortable"
                 v-model="semester"
-                @update:model-value="value => manageCourse.editCourse('Semester', value ?? '')"
+                @update:model-value="value => updateSemester(value)"
             ></v-combobox>
         </v-col>
         <v-col cols="3">
@@ -158,5 +158,11 @@ function updateCourse(value: string | undefined) {
     let course = value ?? '';
     manageCourse.editCourse('CourseName', course);
     manageCourse.editCourse('CourseCode', courses.value?.find(x => x.course_name == course)?.course_code ?? '')
+}
+
+function updateSemester(value: string | undefined) {
+    let semester = value ?? '';
+    manageCourse.editCourse('Semester', semester);
+    manageCourse.editCourse('SemesterId', semesters.value?.find(x => x.semester_name == semester)?.pk ?? 0)
 }
 </script>@/interface/CourseModel

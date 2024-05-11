@@ -7,13 +7,23 @@
 
     <div class="mt-16 mx-auto" style="height: 200px; width: 80%;">
         <div class="ma-auto text-center ">
-            <p class="mb-4 text-primary" >100%</p>
+            <!-- <p class="mb-4 text-primary" >100%</p> -->
             <v-progress-linear
                 color="blue-darken-1"
                 model-value="100"
                 rounded
+                :indeterminate="loading"
             ></v-progress-linear>
-            <p class="mt-4 text-primary">Done</p>
+            <p class="mt-4 text-primary">In progress to send request to system. Wait few minutes for processing!</p>
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+const props = defineProps({
+    loading: {
+        type: Boolean,
+        default: true
+    }
+})
+</script>
