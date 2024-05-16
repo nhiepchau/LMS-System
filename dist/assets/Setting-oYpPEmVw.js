@@ -1,0 +1,1 @@
+import{_ as a,a as n,c as s,b as e,w as c,s as o,F as _,k as r,H as l}from"./index-DnKygW34.js";const i={},f=r("h1",null,"Settings",-1);function d(m,u){const t=l;return n(),s(_,null,[e(t),e(o,null,{default:c(()=>[f]),_:1})],64)}const h=a(i,[["render",d]]);export{h as default};

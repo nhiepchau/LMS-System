@@ -23,6 +23,14 @@
             <v-col><course-info-item class="bg-grey-lighten-3 text-dark-grey" :info="classInfo?.num_of_students" typeInfo="StudentsLarge"></course-info-item></v-col>
             <v-col><course-info-item class="bg-orange-lighten-4 text-orange-darken-3" :info="classInfo?.num_of_outcomes" typeInfo="OutcomesLarge"></course-info-item></v-col>
         </v-row>
+
+        <div class="d-flex flex-row w-100">
+            <!-- Overview chart -->
+            <overview-chart :num_of_lab="classInfo?.num_of_lab" class="w-66 mt-7 mr-4"></overview-chart>
+
+            <!-- Detail chart for each LO -->
+            <doughnut-chart :percent="80" class="w-33 mt-7"></doughnut-chart>
+        </div>
     </v-container>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
-    <div class="pa-4 border-sm rounded-lg">
-        <div class="d-flex flex-row justify-space-between w-100" v-bind="$attrs">
+    <div class="pa-4 border-sm rounded-lg" v-bind="$attrs">
+        <div class="d-flex flex-row justify-space-between w-100">
             <h3 class="my-auto">Statistics</h3>
             <v-btn variant="plain" class="text-none text-blue-lighten-2" >View all</v-btn>
         </div>

@@ -1,1 +1,0 @@
-import{_ as a,a as n,c as o,b as t,w as s,s as c,F as _,k as r,H as i}from"./index-C1svi_0i.js";const l={},f=r("h1",null,"Notifications",-1);function d(m,u){const e=i;return n(),o(_,null,[t(e),t(c,null,{default:s(()=>[f]),_:1})],64)}const h=a(l,[["render",d]]);export{h as default};

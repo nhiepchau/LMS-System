@@ -34,7 +34,8 @@ export default createVuetify({
           'dark-grey': '#6E7787',
           'light-blue': '#DCE6FB',
           'sub-grey': '#BCC1CA',
-          'light-grey-1': '#DEE1E6'
+          'light-grey-1': '#DEE1E6',
+          'sub-chart': '#6F9CEB'
         }
       }
     }
