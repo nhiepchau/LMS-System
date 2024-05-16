@@ -1,0 +1,1 @@
+import{_ as a,a as s,c as n,b as e,w as c,s as o,F as r,k as _,H as l}from"./index-C1svi_0i.js";const f={},i=_("h1",null,"Exercises",-1);function d(m,p){const t=l;return s(),n(r,null,[e(t),e(o,null,{default:c(()=>[i]),_:1})],64)}const x=a(f,[["render",d]]);export{x as default};

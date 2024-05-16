@@ -1,4 +1,5 @@
-import LabModel from "./LabModel";
+import OutcomeModel from "./OutcomeModel";
+import RawOutcomeModel from "./RawOutcomeModel";
 
 interface ClassModel {
     Name: string,
@@ -6,7 +7,8 @@ interface ClassModel {
     Submission?: File,
     Semester?: string,
     Default: boolean,
-    Labs: LabModel[] 
+    Outcomes: OutcomeModel[],
+    RawOutcomes: RawOutcomeModel[]
 }
 
 export default ClassModel;

@@ -150,8 +150,8 @@ async function getCourseSemesters() {
 }
 
 function addClass() {
-    state.classes.push({ Name: '', Default: false, Labs: [] });
-    manageCourse.addClass({ Name: '', Default: false, Labs: [] })
+    state.classes.push({ Name: '', Default: false, Outcomes: [], RawOutcomes: [] });
+    manageCourse.addClass({ Name: '', Default: false, Outcomes: [], RawOutcomes: [] })
 }
 
 function updateCourse(value: string | undefined) {

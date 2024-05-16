@@ -38,10 +38,20 @@
                 <v-dialog v-model="dialog">
                     <template v-slot:activator="{ props: activatorProps }">
                         <v-btn variant="flat" width="75" v-bind="activatorProps" class="text-none bg-primary">
-                            Select
+                            Detail
                         </v-btn>
                     </template>
-                    <course-detail @open-dialog="(val: boolean) => dialog = val" :course="props.name" :semester="semester" ></course-detail>
+                    <class-detail @open-dialog="(val: boolean) => dialog = val" 
+                        :course_name="props.name" 
+                        :semester="semester"
+                        :group="props.group"
+                        :class_code="props.class_code"
+                        :course_code="props.course_code"
+                        :num_of_labs="props.num_of_labs"
+                        :num_submit_file="props.num_submit_file"
+                        :num_of_exercises="props.num_of_exercises"
+                        :num_of_submissions="props.num_of_submissions"
+                    ></class-detail>
                 </v-dialog>
             </div>
         </v-card-actions>
@@ -50,15 +60,13 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 const dialog = ref(false);
-const router = useRouter();
 
 const imageUrls = [
     'https://images.unsplash.com/photo-1542903660-eedba2cda473?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'https://images.unsplash.com/photo-1587620931276-d97f425f62b9?q=80&w=3131&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=3155&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1715610984520-171b95b531c2?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 ]
 
@@ -86,6 +94,22 @@ const props = defineProps({
     semester: {
         type: String,
         required: true
+    },
+    num_of_labs: {
+        type: Number,
+        default: 0
+    },
+    num_submit_file: {
+        type: Number,
+        default: 0
+    },
+    num_of_submissions: {
+        type: Number,
+        default: 0
+    },
+    num_of_exercises: {
+        type: Number,
+        default: 0
     }
 });
 </script>

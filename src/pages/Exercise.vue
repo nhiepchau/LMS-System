@@ -9,7 +9,7 @@
             <div>
                 <v-dialog v-model="dialog">
                     <template v-slot:activator="{ props: activatorProps }">
-                        <v-btn variant="outlined" v-bind="activatorProps" class="text-none text-primary mr-3" prepend-icon="fas fa-file-upload">Import</v-btn>
+                        <v-btn @click="manageCourse.resetCourse()" variant="outlined" v-bind="activatorProps" class="text-none text-primary mr-3" prepend-icon="fas fa-file-upload">Import</v-btn>
                     </template>
                     <import-card :classId="class_id" @open-import-card="(val: boolean) => { dialog = val; getExercises(); }" ></import-card>
                 </v-dialog>
@@ -45,6 +45,7 @@
 </template>
 
 <script setup lang="ts">
+import useCourse from '@/services/course';
 import http from '@/utils/http';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -54,6 +55,7 @@ const dialog = ref(false);
 const questionForm = ref(false);
 const class_id = ref(0);
 const class_code = route.params.class_code.toString();
+const manageCourse = useCourse();
 
 async function getClassDetail() {
     const course = class_code.substring(6, 12);

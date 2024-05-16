@@ -48,7 +48,7 @@
                     <v-window-item v-for="(val, idx) in classes" :key="idx" :value="val.Name">
                         <h3 class="text-primary">Learning outcome distribution</h3>
                         <p class="text-dark-grey text-sm-body-2">Loading learning outcome details from your data</p>
-                        <!-- <div class="text-center mt-10">
+                        <div class="text-center mt-10" v-if="loading">
                             <v-progress-circular
                                 :size="70"
                                 :width="7"
@@ -56,8 +56,8 @@
                                 indeterminate
                             ></v-progress-circular>
                             <p class="mt-5">Just one second</p>
-                        </div> -->
-                        <distribution-form :outcomes="outcomes" :classIdx="idx"></distribution-form>
+                        </div>
+                        <distribution-form v-else :outcomes="outcomes" :classIdx="idx"></distribution-form>
                     </v-window-item>
                 </v-window>
             </div>
@@ -73,6 +73,7 @@ import http from '@/utils/http';
 const tab = ref<String>('');
 const verticalTab = ref<String>('');
 
+const loading = ref<Boolean>(true);
 const manageCourse = useCourse();
 const courseCode = manageCourse.selectedCourse.CourseCode;
 const classes = manageCourse.getValidClasses();
@@ -83,14 +84,19 @@ onMounted(() => {
 });
 
 async function getOutcomes() {
-    const { data } = await http.get(`/api/courses/${courseCode}/outcomes`);
-    outcomes.value = data.map((x: { pk: any, outcome_code: any, parent_outcome: any, threshold: any }) => {
-        return {
-            pk: x.pk,
-            outcome_code: x.outcome_code,
-            parent_outcome: x.parent_outcome,
-            threshold: x.threshold
-        }
-    })
+    // Naive approach
+    await http.get(`/api/courses/${courseCode}/outcomes`)
+        .then(function(response) {
+            loading.value = false;
+            const { data } = response
+            outcomes.value = data.map((x: { pk: any, outcome_code: any, parent_outcome: any, threshold: any }) => {
+                return {
+                    pk: x.pk,
+                    outcome_code: x.outcome_code,
+                    parent_outcome: x.parent_outcome,
+                    threshold: x.threshold
+                }
+            })
+        });
 }
 </script>@/interface/CourseModel

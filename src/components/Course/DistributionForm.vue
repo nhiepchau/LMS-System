@@ -4,57 +4,45 @@
     </v-tabs>
     <v-window v-model="tab" class="mt-3">
         <v-window-item v-for="(LO, index) in LOs" :key="index" :value="LO">
-            <v-table>
-                <thead class="bg-grey">
-                    <tr>
-                        <th class="text-left">LO</th>
-                        <th class="text-center" v-for="(lab, index) in labs" :key="index">{{ lab }}</th>
-                        <th class="text-center">Total</th>
-                        <th class="text-center">Threshold</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(subLO, idx) in data.weight.filter(x => x.subLO.substring(0, 5) == LO).sort(compareString)" :key="idx">
-                        <td>{{ subLO.subLO }}</td>
-                        <td v-for="(lab, i) in labs" :key="i" >
-                            <!-- {{ subLO.labs[i] * 100 }}% -->
-                            <v-text-field 
-                                placeholder="%" 
-                                density="compact"
-                                flat
-                                variant="outlined"
-                                class="my-1 text-sm-body-1"
-                                color="dark-grey"
-                                @update:model-value="value => {
-                                    console.log('Active tab ', tab, subLO.subLO);
-                                    if (subLO.subLO.substring(0, 5) == tab) {
-                                        var newArr = subLO.labs;
-                                        newArr[i] = parseInt(value);
-                                        data.weight[idx].labs = newArr;
-                                        updateLatestLabs();
-                                    }
-                                }"
-                            >
-                            </v-text-field>
-                        </td>
-                        <td class="text-center">
-                            <v-icon size="small">fas fa-bolt</v-icon>&nbsp;
-                            {{ totalWeight[idx] }}%
-                        </td>
-                        <td class="text-center">
-                            {{ subLO.threshold }}
-                        </td>
-                    </tr>
-                </tbody>
-            </v-table>
+            <v-data-table-virtual
+                :headers="getHeaders()"
+                :items="dataTable[LO]"
+                item-value="outcome"
+            >
+                <template v-slot:[`item.lab_${lab}`]="{ item }" v-for="lab in labs">
+                    <v-text-field 
+                        placeholder="%" 
+                        density="compact"
+                        flat
+                        variant="outlined"
+                        class="my-1 text-sm-body-1"
+                        color="dark-grey"
+                        :model-value="parseInt(item.labs[lab-1])"
+                        @update:model-value="(value) => {
+                            item.labs[lab-1] = parseInt(value);
+                            updateLabContribution();
+                        }"
+                        type="number"
+                        v-if="item.labs[lab-1] !== -1"
+                    >
+                    </v-text-field>
+                </template>
+                <template v-slot:item.total="{ item }">
+                    <v-icon size="small">fas fa-bolt</v-icon>&nbsp;
+                    {{ getTotalWeight(item) }}%
+                </template>
+            </v-data-table-virtual>
         </v-window-item>
     </v-window>
 </template>
 
 <script setup lang="ts">
-import LabModel from '@/interface/LabModel';
+import useAuth from '@/services/auth';
 import useCourse from '@/services/course';
-import { reactive, ref, computed, onMounted } from 'vue';
+import axios from 'axios';
+import { reactive, ref, onMounted } from 'vue';
+import OutcomeModel from '@/interface/OutcomeModel';
+import RawOutcomeModel from '@/interface/RawOutcomeModel';
 
 const props = defineProps({
     classIdx: {
@@ -75,84 +63,126 @@ const manageCourse = useCourse();
 const LOs = props.outcomes.map(x => x.parent_outcome).filter(onlyUnique);
 const tab = ref<String>('');
 const numOfLabs = manageCourse.selectedCourse.NumOfLabs;
-const labs = Array.from({length: numOfLabs}, (_, i) => i + 1).map(x => `Lab ${x}`);
+const labs = Array.from({length: numOfLabs}, (_, i) => i + 1).map(x => x);
 
-interface LabWeight {
-    subLO: string,
-    labs: number[],
-    threshold: number
+function getHeaders() {
+    const labHeaders = labs.map(x => {
+        return { title: `Lab ${x}`, align: 'center', sortable: false, width: 120, key: `lab_${x}`, value: (item: any) => item.labs[x-1] }
+    });
+    const headers : any = [
+        { title: 'LO', align: 'start', key: 'outcome', sortable: false }
+    ]
+    headers.push(...labHeaders)
+    headers.push(...[
+        { title: 'Total', align: 'center', key: 'total', sortable: false, value: (item: any) => labs.reduce((prev, cur) => prev + (item.labs[cur-1] !== -1 ? item.labs[cur-1] : 0), 0) },
+        { title: 'Threshold', align: 'center', sortable: false, key: 'threshold' }
+    ])
+
+    return headers;
 }
 
-interface Contribution {
-    weight: LabWeight[]
+function compareString (a: { outcome: string }, b: { outcome: string }) {
+    return ('' + a.outcome).localeCompare(b.outcome);
 }
 
-function compareString (a: LabWeight, b: LabWeight) {
-    return ('' + a.subLO).localeCompare(b.subLO);
+let classVal = manageCourse.getValidClasses()[props.classIdx];
+function getDataTable() {
+    const result = {} as { [key: string]: any[] }
+    if (classVal.RawOutcomes.length > 0) {
+        LOs.forEach(outcome => {
+            const subLOs = classVal.RawOutcomes.filter(x => x.Outcome.substring(0, 5) == outcome);
+            result[outcome] = subLOs.map(sub => {
+                return {
+                    outcome: sub.Outcome,
+                    labs: sub.Labs,
+                    threshold: sub.Threshold
+                }
+            }).sort(compareString)
+        });   
+    }
+    else {
+        LOs.forEach(outcome => {
+            const subLOs = props.outcomes.filter(x => x.parent_outcome == outcome);
+            result[outcome] = subLOs.map(sub => {
+                return {
+                    outcome: sub.outcome_code,
+                    labs: Array.from(Array(numOfLabs).values()).map(x => -1),
+                    threshold: sub.threshold
+                }
+            }).sort(compareString)
+        });
+    }
+    console.log('Result ', result)
+    return result;
 }
 
-// Data about lab contribution
-const data : Contribution = reactive({
-    weight: props.outcomes.map<LabWeight>(x => {
-        return {
-            subLO: x.outcome_code,
-            labs: Array<number>(numOfLabs),
-            threshold: x.threshold
-        }
-    }).sort(compareString)
-});
+const dataTable = reactive(getDataTable());
+onMounted(async () => {
+    if (classVal.RawOutcomes.length <= 0) {
+        await analyzeLabContribution();
+    }
+})
 
 // Methods
-const totalWeight = computed(() => {
-    let result = Array<Number>()
-
-    data.weight.forEach(x => {
-        let sum = 0
-        x.labs.forEach(element => {
-        sum += element; 
-        });
-
-        result.push(sum)
-    })
-
-    return result;
-});
-
-function updateLatestLabs() {
-    var newLabs = data.weight.flatMap<LabModel>(x => {
-        return x.labs.map<LabModel>((l, id) => {
-            return {
-                LabName: labs[id],
-                Outcome: x.subLO,
-                Threshold: x.threshold,
-                Contribution: l
-            }
-        });
-    });
-
-    console.log('New labs ', newLabs)
-
-    manageCourse.setLabs(props.classIdx, newLabs);
+function getTotalWeight(item: any) {
+    return labs.reduce((prev, cur) => prev + (!item.labs[cur-1] || item.labs[cur-1] === -1 ? 0 :  parseInt(item.labs[cur-1]) ), 0);
 }
 
-onMounted(() => {
-    let classVal = manageCourse.getValidClasses()[props.classIdx];
-    if (classVal.Labs.length > 0) {
-        var first = classVal.Labs.map<LabWeight>(lab => {
-            return {
-                subLO: lab.Outcome,
-                threshold: lab.Threshold,
-                labs: []
+function updateLabContribution() {
+    let newOutcomes = [] as OutcomeModel[];
+    let newRawOutcomes = [] as RawOutcomeModel[];
+    LOs.forEach(lo => {
+        dataTable[lo].forEach(item => {
+            item.labs.forEach((lab: number, i: number) => {
+                if (lab > 0) {
+                    newOutcomes.push({
+                        Outcome: item.outcome,
+                        Lab: i + 1,
+                        Contribution: lab / 100.0
+                    })
+                }
+            });
+
+            newRawOutcomes.push({
+                Outcome: item.outcome,
+                Labs: item.labs,
+                Threshold: item.threshold
+            })
+        })
+    })
+    console.log('New outcomes ', newOutcomes);
+    manageCourse.setOutcomes(props.classIdx, newOutcomes);
+    manageCourse.setRawOutcomes(props.classIdx, newRawOutcomes);
+}
+
+async function analyzeLabContribution() {
+    // Advanced approach: auto analyze lab contribution based on absent/available question
+    const formData = new FormData();
+    const auth = useAuth();
+    const courseCode = manageCourse.selectedCourse.CourseCode;
+    if (classVal.Exercise) {
+        formData.append("exercise_file", classVal.Exercise);
+
+        const baseUrl = import.meta.env.VITE_APP_API_URL
+        // Call API with type form-data
+        await axios.post(`${baseUrl}/api/courses/${courseCode}/exercises/analyze`, formData,
+        {
+            headers: {
+                "Authorization": `Bearer ${auth.token}`,
+                "Content-Type": "multipart/form-data"
             }
-        });
-
-        classVal.Labs.forEach(e => {
-            first.find(x => x.subLO == e.Outcome)?.labs.push(e.Contribution)
-        });
-
-        data.weight = first;
+        }).then(async function(response) {
+            const { data } = response;
+            data.forEach((item: { outcome_code: string, threshold: number, labs: string[] }) => {
+                const parent_outcome = item.outcome_code.substring(0, 5);
+                item.labs.forEach(lab => {
+                    const labVal = parseInt(lab.substring(4));
+                    dataTable[parent_outcome].find(x => x.outcome === item.outcome_code).labs[labVal-1] = undefined
+                })
+            });
+        })
     }
-});
+}
 </script>
 
 <style scoped>
@@ -166,5 +196,9 @@ onMounted(() => {
     padding-left: 10px;
     padding-right: 10px;
     font-size: 12px !important;
+}
+
+.v-table__wrapper thead {
+    background-color: grey !important;
 }
 </style>

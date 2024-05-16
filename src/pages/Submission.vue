@@ -9,7 +9,7 @@
             <div>
                 <v-dialog v-model="dialog">
                     <template v-slot:activator="{ props: activatorProps }">
-                        <v-btn variant="flat" v-bind="activatorProps" class="text-none bg-primary text-white" prepend-icon="fas fa-file-upload">Import</v-btn>
+                        <v-btn @click="manageCourse.resetCourse()" variant="flat" v-bind="activatorProps" class="text-none bg-primary text-white" prepend-icon="fas fa-file-upload">Import</v-btn>
                     </template>
                     <upload-submission :classId="class_id" @open-submission-card="(val: boolean) => { dialog = val; }" ></upload-submission>
                 </v-dialog>
@@ -32,6 +32,7 @@
 </template>
 
 <script setup lang="ts">
+import useCourse from '@/services/course';
 import http from '@/utils/http';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -42,6 +43,7 @@ const class_id = ref(0);
 const class_code = route.params.class_code.toString();
 const itemsPerPage = ref(25);
 const loading = ref(false);
+const manageCourse = useCourse();
 
 async function getClassDetail() {
     const course = class_code.substring(6, 12);

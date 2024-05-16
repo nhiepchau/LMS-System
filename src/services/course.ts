@@ -1,7 +1,8 @@
 import CourseModel from "@/interface/CourseModel";
 import ClassModel from "@/interface/ClassModel";
 import { defineStore } from "pinia";
-import LabModel from "@/interface/LabModel";
+import OutcomeModel from "@/interface/OutcomeModel";
+import RawOutcomeModel from "@/interface/RawOutcomeModel";
 
 const useCourse = defineStore('course', {
     state: () => {
@@ -16,7 +17,8 @@ const useCourse = defineStore('course', {
                     {
                         Name: '',
                         Default: false,
-                        Labs: []
+                        Outcomes: [],
+                        RawOutcomes: []
                     }
                 ]
             } as CourseModel
@@ -35,6 +37,24 @@ const useCourse = defineStore('course', {
         }
     },
     actions: {
+        resetCourse() {
+            this.selectedCourse = {
+                CourseName: '',
+                Semester: '',
+                SemesterId: 0,
+                CourseCode: '',
+                NumOfLabs: 0,
+                Classes: [
+                    {
+                        Name: '',
+                        Default: false,
+                        Outcomes: [],
+                        RawOutcomes: []
+                    }
+                ]
+            } as CourseModel
+        },
+
         editCourse(attr: 'CourseName' | 'Semester' | 'NumOfLabs' | 'CourseCode' | 'SemesterId', value: string | number) {
             let course = this.selectedCourse;
 
@@ -64,10 +84,24 @@ const useCourse = defineStore('course', {
             }
         },
 
-        setLabs(classIdx: number, labs: LabModel[]) {
+        setOutcomes(classIdx: number, outcomes: OutcomeModel[]) {
             let classVal = this.selectedCourse.Classes[classIdx];
             if (classVal) {
-                this.selectedCourse.Classes[classIdx].Labs = labs
+                this.selectedCourse.Classes[classIdx].Outcomes = outcomes
+            }
+        },
+
+        setRawOutcomes(classIdx: number, outcomes: RawOutcomeModel[]) {
+            let classVal = this.selectedCourse.Classes[classIdx];
+            if (classVal) {
+                this.selectedCourse.Classes[classIdx].RawOutcomes = outcomes
+            }
+        },
+
+        addOutcome(classIdx: number, outcome: OutcomeModel) {
+            let classVal = this.selectedCourse.Classes[classIdx];
+            if (classVal) {
+                this.selectedCourse.Classes[classIdx].Outcomes.push(outcome)
             }
         },
 
