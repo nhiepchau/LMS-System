@@ -18,13 +18,9 @@ const router = createRouter({
                 { path: 'create', component: () => import("@/pages/CreateCourse.vue") },
                 { path: ':class_code', component: () => import("@/pages/Class.vue") },
                 { path: ':class_code/exercise', component: () => import("@/pages/Exercise.vue") },
-                { path: ':class_code/submission', component: () => import("@/pages/Submission.vue") }
+                { path: ':class_code/submission', component: () => import("@/pages/Submission.vue") },
+                { path: ':class_code/outcome', component: () => import("@/pages/Outcome.vue") }
             ],
-            beforeEnter: [checkRole]
-        },
-        {
-            path: '/outcome',
-            component: () => import("@/pages/Outcome.vue"),
             beforeEnter: [checkRole]
         },
         {

@@ -10,10 +10,13 @@
             </v-btn>
         </template>
         <template v-slot:title>
-            <div v-if="!props.typeInfo.includes('Large')">
+            <div v-if="props.typeInfo.includes('Large')" class="font-weight-bold text-h5">
                 {{ props.info < 10 ? `0${props.info}` : props.info }}
             </div>
-            <div v-else class="font-weight-bold text-h5">
+            <div v-else-if="props.typeInfo.includes('Total')" class="font-weight-bold text-h5">
+                {{ props.info < 10 ? `0${props.info}` : props.info }}
+            </div>    
+            <div v-else>
                 {{ props.info < 10 ? `0${props.info}` : props.info }}
             </div>
         </template>
@@ -28,6 +31,7 @@
 
         <v-card-actions v-if="getIcon(props.typeInfo) === ''">
             <v-btn 
+                :to="props.to"
                 class="text-none text-sub-grey" 
                 prepend-icon="fas fa-arrow-right"
                 @click.prevent="() => { if (typeInfo === 'Classes') router.push('/class') }"
@@ -49,6 +53,10 @@ const props = defineProps({
         default: 0
     },
     icon: {
+        type: String,
+        default: ''
+    },
+    to: {
         type: String,
         default: ''
     }

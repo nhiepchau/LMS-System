@@ -57,12 +57,13 @@ const submissions = ref<Array<{ question_id: Number, secured_student_id: String,
 
 async function loadItems ({ page, itemsPerPage, sortBy }: any) {
     loading.value = true;
-    await getSubmissions(page, itemsPerPage);
+    await getSubmissions(page, itemsPerPage, sortBy);
     loading.value = false;
 }
 
-async function getSubmissions(page: Number, itemsPerPage: Number) {
-    const { data } = await http.get(`/api/classes/${class_code}/submissions?page=${page}&items=${itemsPerPage}`);
+async function getSubmissions(page: Number, itemsPerPage: Number, sortBy: any) {
+    const sortCondition = sortBy.length > 0 ? `&sortBy=${sortBy[0].key}&sortOrder=${sortBy[0].order}` : '';
+    const { data } = await http.get(`/api/classes/${class_code}/submissions?page=${page}&items=${itemsPerPage}${sortCondition}`);
     submissions.value = data.map((x: { exercise: any; student: any; score: any, time_taken: any, started_time: any, submitted_time: any }) => {
         return {
             question_id: x.exercise,
@@ -77,16 +78,16 @@ async function getSubmissions(page: Number, itemsPerPage: Number) {
 
 onMounted(async () => {
     await getClassDetail();
-    await getSubmissions(1, itemsPerPage.value);
+    await getSubmissions(1, itemsPerPage.value, []);
 })
 
 const headers : any = [
     { title: 'question_id', align: 'start', key: 'question_id', sortable: false },
     { title: 'secured_student_id', align: 'start', key: 'secured_student_id', sortable: false },
-    { title: 'started_time', align: 'start', key: 'started_time', sortable: false },
-    { title: 'submitted_time', align: 'start', key: 'submitted_time', sortable: false },
+    { title: 'started_time', align: 'start', key: 'started_time', sortable: true },
+    { title: 'submitted_time', align: 'start', key: 'submitted_time', sortable: true },
     { title: 'time_taken', align: 'start', key: 'time_taken', sortable: false },
-    { title: 'score', align: 'center', key: 'score', sortable: false }
+    { title: 'score', align: 'center', key: 'score', sortable: true }
 ]
 </script>
 

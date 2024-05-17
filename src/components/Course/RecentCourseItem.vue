@@ -1,17 +1,11 @@
 <template>
     <v-card variant="outlined" color="light-grey-1">
-        <v-card-text><h4 class="text-primary">{{ className }}</h4></v-card-text>
-        <v-autocomplete
-            bg-color="blue-lighten-5"
-            color="blue-darken-2"
-            class="float-end text-blue-darken-2 w-50 mr-4"
-            variant="solo"
+        <v-card-text><div class="text-primary font-weight-bold" style="font-size: medium;" >{{ className }}</div></v-card-text>
+        <v-btn
+            class="text-none bg-blue-lighten-5 float-end text-blue-darken-2 w-33 mr-4 mb-5"
             flat
-            density="compact"
-            label="Class"
-            :model-value="selectedClass"
-            :items="['L01', 'L02', 'L04']"
-        ></v-autocomplete>
+            :to="`/class/${props.classCode}`"
+        >{{ `Class ${selectedClass}` }}</v-btn>
     </v-card>
 </template>
 
@@ -22,6 +16,10 @@ const props = defineProps({
         default: ''
     },
     selectedClass: {
+        type: String,
+        default: ''
+    },
+    classCode: {
         type: String,
         default: ''
     }

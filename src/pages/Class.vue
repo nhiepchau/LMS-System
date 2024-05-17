@@ -29,7 +29,7 @@
             <overview-chart :num_of_lab="classInfo?.num_of_lab" class="w-66 mt-7 mr-4"></overview-chart>
 
             <!-- Detail chart for each LO -->
-            <doughnut-chart :percent="80" class="w-33 mt-7"></doughnut-chart>
+            <doughnut-chart class="w-33 mt-7"></doughnut-chart>
         </div>
     </v-container>
 </template>

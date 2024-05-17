@@ -14,7 +14,7 @@
                     flat
                     @update:model-value="(value) => getChartData(value)"
                 ></v-select>
-                <v-btn height="40" flat class="text-none text-blue-lighten-2 bg-blue-lighten-5" >View all</v-btn>
+                <v-btn :to="`/class/${class_code}/outcome`" height="40" flat class="text-none text-blue-lighten-2 bg-blue-lighten-5" >View all</v-btn>
             </div>
         </div>
 
@@ -32,7 +32,7 @@
 <script setup lang="ts">
 import { Bar } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onUpdated, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import http from '@/utils/http';
 
@@ -44,7 +44,7 @@ const class_code = route.params.class_code;
 const props = defineProps({
     num_of_lab: {
         type: Number,
-        default: 4
+        default: 0
     }
 })
 
@@ -57,11 +57,6 @@ function getLabs() {
         result.push(`${lab}-in`)
         result.push(`${lab}-post`)
     })
-
-    // Update default lab
-    if (!select_lab.value) {
-        select_lab.value = `${props.num_of_lab}-post`;
-    }
     return result
 }
 
@@ -112,13 +107,17 @@ async function getChartData(lab_val: string) {
         });
 }
 
-onMounted(() => {
-    getChartData(select_lab.value ?? '');
-})
-
-const chartOptions = {
+const chartOptions : any = {
     responsive: true,
     maintainAspectRatio: true
 }
+
+onUpdated(() => {
+    // Update default lab
+    if (!select_lab.value && props.num_of_lab > 0) {
+        select_lab.value = `${props.num_of_lab}-post`;
+        getChartData(select_lab.value);
+    }
+})
 
 </script>

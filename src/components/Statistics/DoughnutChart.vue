@@ -134,8 +134,6 @@ async function getProgressOutcome(outcome: string) {
                     }
                 })
             }
-
-            console.log('State ', state.outcomeInfo)
         });
 }
 
@@ -144,7 +142,7 @@ onMounted(() => {
     getOutcomes();
 });
 
-const chartOptions = {
+const chartOptions : any = {
     responsive: true,
     maintainAspectRatio: true,
 }

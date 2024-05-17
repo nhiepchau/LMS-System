@@ -1,0 +1,1 @@
+import{a,c as n,b as e,w as o,v as s,F as c,l as r,H as _}from"./index-BFMTCsx2.js";import{_ as l}from"./_plugin-vue_export-helper-DlAUqK2U.js";const i={},f=r("h1",null,"Settings",-1);function m(d,p){const t=_;return a(),n(c,null,[e(t),e(s,null,{default:o(()=>[f]),_:1})],64)}const x=l(i,[["render",m]]);export{x as default};
