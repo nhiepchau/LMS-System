@@ -1,15 +1,6 @@
 <template>
     <div class="mt-4 d-flex flex-row w-100 justify-space-between">
         <div class="w-33 d-flex flex-row">
-            <!-- <v-select
-                label="Student"
-                :items="['2012715']"
-                variant="solo"
-                density="compact"
-                class="mr-2 w-25"
-                bg-color="#F3F4F6"
-                flat
-            ></v-select> -->
             <v-select
                 label="Outcomes"
                 v-model="outcomes"

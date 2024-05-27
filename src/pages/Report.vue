@@ -1,11 +1,24 @@
 <template>
     <top-bar />
     <v-container>
-        <h1>Report & Suggestion</h1>
-        <div class="mt-5">
+        <div class="d-flex flex-row justify-space-between">
+            <h1 class="w-75">Report & Suggestion</h1>
+            <v-select
+                    label="Class"
+                    v-model="selectClass"
+                    :items="courses?.map(x => x.class_code)"
+                    variant="solo"
+                    density="compact"
+                    class="mr-2"
+                    bg-color="#F3F4F6"
+                    flat
+            ></v-select>
+        </div>
+        <div class="">
             <combine-chart class="w-100" 
                 title="Learning Outcome Performance"
-                :classes="courses?.map(x => { return { name: x.name, classCode: x.class_code, num_of_lab: x.num_of_lab } })" 
+                :classCode="selectClass"
+                :numOfLab="numOfLab"
             ></combine-chart>
         </div>
     </v-container>
@@ -15,6 +28,8 @@
 import http from '@/utils/http';
 import { onMounted, ref } from 'vue';
 
+const selectClass = ref<string>();
+const numOfLab = ref<number>();
 const courses = ref<Array<{ name: string, course_code: string, class_code: string, group: string, num_of_lab: number, semester: string, num_of_students: number, num_of_submissions: number, num_of_exercises: number, num_submit_file: number }>>();
 
 async function getClasses() {
@@ -35,6 +50,9 @@ async function getClasses() {
             num_of_submissions: x.num_of_submissions
         }
     })
+
+    selectClass.value = courses.value?.at(0)?.class_code ?? '';
+    numOfLab.value = courses.value?.at(0)?.num_of_lab ?? 0;
 }
 
 onMounted(() => {
