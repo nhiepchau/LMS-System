@@ -1,37 +1,106 @@
 <template>
     <top-bar></top-bar>
     <v-container>
-        <h1>Create classes</h1>
-        <bread-crumb :activeIdx="page" class="my-2"></bread-crumb>
-        <div class="border-sm px-3 py-5 rounded mt-4">
-            <create-course-form v-if="page === 0" ></create-course-form>
-            <submission-form v-if="page === 1"></submission-form>
-            <analysis-form :error-message="errorMessage" v-if="page === 2"></analysis-form>
+        <h1>Create course</h1>
+        <div class="border-sm px-3 py-5 rounded-lg mt-4">
+            <div class="d-flex flex-row">
+                <v-icon class="my-auto mr-2 text-sub" size="small">fas fa-info-circle</v-icon>
+                <h3 class="my-auto text-primary">General Information</h3>
+            </div>
+            <v-row class="mt-4">
+                <v-col cols="3">
+                    <v-text-field
+                        label="Course code"
+                        variant="outlined"
+                        color="sub"
+                        bg-color="#F3F4F6"
+                        density="comfortable"
+                        v-model="state.courseCode"
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                    <v-text-field
+                        label="Course name"
+                        variant="outlined"
+                        color="sub"
+                        bg-color="#F3F4F6"
+                        density="comfortable"
+                        v-model="state.courseName"
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="3">
+                    <v-text-field
+                        bg-color="#F3F4F6"
+                        label="Department"
+                        color="sub"
+                        variant="outlined"
+                        density="comfortable"
+                        v-model="state.department"
+                    ></v-text-field>
+                </v-col>
+            </v-row>
+            <v-divider class="my-2"></v-divider>
+            <div class="d-flex flex-row mt-4">
+                <v-icon class="my-auto mr-2 text-sub" size="small">far fa-calendar</v-icon>
+                <h3 class="my-auto text-primary">Learning outcomes</h3>
+            </div>
+            <v-table>
+                <thead>
+                    <tr>
+                        <th>Outcome</th>
+                        <th>Threshold</th>
+                        <th class="w-50">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(row, idx) in state.outcomes" :key="idx" >
+                        <td>
+                            <v-text-field
+                                rounded="md"
+                                bg-color="#F3F4F6"
+                                color="sub"
+                                variant="outlined"
+                                placeholder="Outcome (e.g, L.O.1.1)"
+                                class="mt-2"
+                                density="compact"
+                                v-model="row.outcome"
+                            ></v-text-field>
+                        </td>
+                        <td>
+                            <v-text-field
+                                rounded="md"
+                                bg-color="#F3F4F6"
+                                color="sub"
+                                variant="outlined"
+                                placeholder="Threshold"
+                                class="mt-2"
+                                density="compact"
+                                v-model="row.threshold"
+                            ></v-text-field>
+                        </td>
+                        <td class="w-50">
+                            <v-text-field
+                                rounded="md"
+                                bg-color="#F3F4F6"
+                                color="sub"
+                                variant="outlined"
+                                placeholder="Description"
+                                class="mt-2"
+                                density="compact"
+                                v-model="row.description"
+                            ></v-text-field>
+                        </td>
+                    </tr>
+                </tbody>
+            </v-table>
+            <v-btn variant="plain" @click.prevent="addOutcome()" class="text-none text-primary" prepend-icon="fas fa-plus">Add more outcomes</v-btn>
         </div>
         <div class="mt-2 text-right">
             <v-btn
-                :disabled="page <= 0"
-                variant="plain"
-                text="Back"
-                prepend-icon="fas fa-arrow-left"
-                class="text-none bg-light-blue text-sub mr-3"
-                @click.prevent="page--"
-            ></v-btn>
-            <v-btn
-                v-if="page + 1 < maxPages"
                 variant="plain"
                 append-icon="fas fa-arrow-right"
                 class="text-none bg-primary"
-                text="Next"
-                @click.prevent="page++"
-            ></v-btn>
-            <v-btn
-                v-if="page + 1 >= maxPages"
-                variant="plain"
-                append-icon="fas fa-arrow-right"
-                class="text-none bg-primary"
-                text="Finish"
-                :disabled="page >= maxPages"
+                text="Save"
                 @click.prevent="submitCreateCourse"
             ></v-btn>
         </div>
@@ -39,118 +108,60 @@
 </template>
 
 <script setup lang="ts">
-import ClassModel from '@/interface/ClassModel';
-import useAuth from '@/services/auth';
-import useCourse from '@/services/course';
 import http from '@/utils/http';
 import { CreateNotification } from '@/utils/notification';
-import axios from 'axios';
-import { inject, onMounted, ref } from 'vue';
+import { stat } from 'fs';
+import { inject, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 
-const page = ref<number>(0);
-const maxPages = 2;
-const manageCourse = useCourse();
-const auth = useAuth();
-const router = useRouter();
-const baseUrl = import.meta.env.VITE_APP_API_URL
 const createNotification = <CreateNotification>inject('create-notification');
-const errorMessage = ref<String>();
 
-function isValidClassInfo(classVal: ClassModel) {
-    if (classVal.Submission && classVal.Exercise && classVal.Outcomes.length > 0) {
-        return true;
-    }
+const state = reactive({
+    courseCode: '' as string,
+    courseName: '' as string,
+    department: '' as string,
+    outcomes: [
+        { outcome: '' as string, threshold: 5 as number, description: '' as string }
+    ]
+})
 
-    return false;
+function addOutcome() {
+    state.outcomes.push({ outcome: '', threshold: 5, description: '' });
 }
 
+const router = useRouter();
 async function submitCreateCourse() {
-    page.value++;
-    let classes = manageCourse.getValidClasses();
-    for (let index = 0; index < classes.length; index++) {
-        const classVal = classes[index];
-        if (isValidClassInfo(classVal)) {
-            await http.post(`/api/courses/${manageCourse.selectedCourse.CourseCode}/classes/`, {
-                semester: manageCourse.selectedCourse.SemesterId,
-                num_of_lab: manageCourse.selectedCourse.NumOfLabs,
-                teacher: auth.user.email,
-                role: "Lecturer",
-                group: classVal.Name
-            })
-            .then(async function(response: any) {
-                // Submit exercise -> lab contribution + submission
-                await submitExerciseFile(classVal, { pk: response.data.pk, class_code: response.data.class_code });
+    // Create new course
+    await http.post(`/api/courses/`, {
+        course_code: state.courseCode,
+        course_name: state.courseName,
+        department: state.department
+    })
+    .then(async function(response: any) {
+        // Create list outcomes for new course
+        let validOutcomes = state.outcomes.filter(x => x.outcome !== '')
+            .map(x => { 
+                return { outcome_code: x.outcome, outcome_description: x.description, threshold: x.threshold, parent_outcome: x.outcome.substring(0, 5) } 
+            });
+        console.log('Valid outcomes ', validOutcomes)
+        await http.post(`/api/courses/${state.courseCode}/outcomes/create`, validOutcomes)
+            .then(function () {
+                createNotification({
+                    type: 'success',
+                    message: `Create new course successfully!`
+                });
 
                 // Redirect to homepage
                 setTimeout(() => {
-                    router.push({ name: 'class-home' })
+                    router.push({ name: 'course-home' })
                 }, 3000);
             })
-            errorMessage.value = ''
-        }
-        else {
-            errorMessage.value = 'Make sure submit all submission file, exercise file and lab contributions!';
-        }
-    }
-
-}
-
-async function submitExerciseFile(classVal: ClassModel, data: { pk: any, class_code: any }) {
-    const formData = new FormData();
-    if (classVal.Exercise) {
-        formData.append("exercise_file", classVal.Exercise);
-        formData.append("class_code", `${data.pk}`);
-
-        // Call API with type form-data
-        await axios.post(`${baseUrl}/api/classes/${data.class_code}/exercises/upload`, formData,
-        {
-            headers: {
-                "Authorization": `Bearer ${auth.token}`,
-                "Content-Type": "multipart/form-data"
-            }
-        }).then(async function(_) {
-            await submitLabLOContribution(classVal, data);
-            await submitSubmissionFile(classVal, data);
-        })
-    }
-}
-
-async function submitSubmissionFile(classVal: ClassModel, data: { pk: any, class_code: any }) {
-    const formData = new FormData();
-    if (classVal.Submission) {
-        formData.append("submission_file", classVal.Submission);
-        formData.append("class_code", `${data.pk}`);
-
-        // Call API with type form-data
-        await axios.post(`${baseUrl}/api/classes/${data.class_code}/submissions/upload`, formData,
-        {
-            headers: {
-                "Authorization": `Bearer ${auth.token}`,
-                "Content-Type": "multipart/form-data"
-            }
-        }).then(function(_) {
-            createNotification({
-                type: 'success',
-                message: `Submit for create course successfully! Please wait few minutes for processing and analyzing data!`
-            })
-        }).catch(function() {
-            createNotification({
-                type: 'error',
-                message: "Something's wrong when uploading!"
-            })
-        })
-    }
-}
-
-async function submitLabLOContribution(classVal: ClassModel, data: { pk: any, class_code: any }) {
-    const submitData = classVal.Outcomes.map(x => {
-        return {
-            outcome_code: x.Outcome,
-            lab: x.Lab,
-            contribution: x.Contribution
-        }
-    });
-    await http.post(`/api/courses/${manageCourse.selectedCourse.CourseCode}/classes/${data.class_code}/labcontributions`, submitData);
+    })
+    .catch(function() {
+        createNotification({
+            type: 'error',
+            message: `Failed to create new course!`
+        });
+    })
 }
 </script>

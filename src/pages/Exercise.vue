@@ -17,7 +17,7 @@
                     <template v-slot:activator="{ props: activatorProps }">
                         <v-btn variant="flat" height="40" v-bind="activatorProps" class="text-none bg-primary text-white" prepend-icon="fas fa-plus">New question</v-btn>
                     </template>
-                    <add-question-form></add-question-form>
+                    <add-question-form :numOfLab="num_of_lab" :classCode="class_code" @open-question-form="(val: boolean) => { questionForm = val; getExercises(); }"></add-question-form>
                 </v-dialog>
             </div>
         </div>
@@ -54,6 +54,7 @@ const route = useRoute();
 const dialog = ref(false);
 const questionForm = ref(false);
 const class_id = ref(0);
+const num_of_lab = ref(0);
 const class_code = route.params.class_code.toString();
 const manageCourse = useCourse();
 
@@ -61,6 +62,7 @@ async function getClassDetail() {
     const course = class_code.substring(6, 12);
     const { data } = await http.get(`/api/courses/${course}/classes/${class_code}`);
     class_id.value = data.pk;
+    num_of_lab.value = data.num_of_lab;
 }
 
 function openBkelPage(url: string) {

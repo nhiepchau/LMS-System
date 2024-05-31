@@ -10,13 +10,19 @@
             </template>
           </v-list-item>
 
-          <v-list-item title="Classes" value="classes" to="/class" v-if="auth.user.role === 'Teacher'" >
+          <v-list-item title="Courses" value="courses" to="/course" v-if="auth.user.role === 'Head Lecturer'" >
+            <template v-slot:prepend>
+              <v-icon size="md">fas fa-list</v-icon>
+            </template>
+          </v-list-item>
+
+          <v-list-item title="Classes" value="classes" to="/class" v-if="auth.user.role === 'Teacher' || auth.user.role === 'Head Lecturer'" >
             <template v-slot:prepend>
               <v-icon size="md">fas fa-book</v-icon>
             </template>
           </v-list-item>
 
-          <v-list-item title="Reports" value="reports" to="/report" v-if="auth.user.role === 'Teacher'">
+          <v-list-item title="Reports" value="reports" to="/report" v-if="auth.user.role === 'Teacher' || auth.user.role === 'Head Lecturer'">
             <template v-slot:prepend>
               <v-icon size="md">fas fa-chart-pie</v-icon>
             </template> 

@@ -84,7 +84,7 @@ async function getLabContributions() {
                     labs: x.labs
                 }
             });
-            LOs.value = data.map((x: { parent_outcome: string }) => x.parent_outcome).filter(onlyUnique);
+            LOs.value = data.map((x: { parent_outcome: string }) => x.parent_outcome).filter(onlyUnique).sort(compareString);
             dataTable.value = getDataTable();
             tab.value = LOs.value?.at(0) ?? '';
         });
@@ -95,7 +95,11 @@ function getTotalWeight(item: any) {
     return labs.reduce((prev, cur) => prev + (!item.labs[cur-1] || item.labs[cur-1] === -1 ? 0 :  parseFloat(item.labs[cur-1]) ), 0);
 }
 
-function compareString (a: { outcome: string }, b: { outcome: string }) {
+function compareString (a: string, b: string) {
+    return ('' + a).localeCompare(b);
+}
+
+function compareOutcome (a: { outcome: string }, b: { outcome: string }) {
     return ('' + a.outcome).localeCompare(b.outcome);
 }
 
@@ -127,7 +131,8 @@ function getDataTable() {
                     labs: sub.labs,
                     threshold: sub.threshold
                 }
-            }).sort(compareString)
+            })
+            .sort(compareOutcome)
         });
     }
 

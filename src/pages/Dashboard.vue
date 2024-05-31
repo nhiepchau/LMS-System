@@ -1,6 +1,6 @@
 <template>
     <top-bar />
-    <v-container v-if="auth.user.role === 'Teacher'">
+    <v-container v-if="auth.user.role === 'Teacher' || auth.user.role === 'Head Lecturer'">
         <h1 class="text-primary" >Dashboard</h1>
 
         <v-row class="mt-0">
@@ -93,7 +93,7 @@ const courses = ref<Array<{ name: string, course_code: string, class_code: strin
 
 async function getClasses() {
     let payload : any;
-    if (auth.user.role === 'Teacher') {
+    if (auth.user.role === 'Teacher' || auth.user.role === 'Head Lecturer') {
         const { data } = await http.get('/api/classes');
         payload = data;
     }

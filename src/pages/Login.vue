@@ -93,7 +93,7 @@ async function onSubmit () {
                 // Save user info
                 const user = response.data.user;
                 auth.setUserInfo(`${user.first_name} ${user.last_name}`
-                    , user.is_teacher ? 'Teacher' : 'Student'
+                    , user.is_teacher ? (user.is_head_teacher ? 'Head Lecturer' : 'Teacher') : 'Student'
                     , user.email
                     , user.is_teacher ? '' : user.student_id)
 
@@ -102,7 +102,7 @@ async function onSubmit () {
                 sessionStorage.setItem('password', passwordVal);
                 sessionStorage.setItem('token', response.data.access);
                 sessionStorage.setItem('fullname', `${user.first_name} ${user.last_name}`);
-                sessionStorage.setItem('role', user.is_teacher ? 'Teacher' : 'Student');
+                sessionStorage.setItem('role', user.is_teacher ? (user.is_head_teacher ? 'Head Lecturer' : 'Teacher') : 'Student');
                 sessionStorage.setItem('email', user.email);
                 sessionStorage.setItem('studentId', user.is_teacher ? '' : user.student_id)
 

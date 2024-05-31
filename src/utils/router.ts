@@ -11,11 +11,20 @@ const router = createRouter({
             name: 'homepage'
         },
         {
+            path: '/course',
+            name: 'course',
+            children: [
+                { path: '', component: () => import("@/pages/Course.vue"), name: 'course-home' },
+                { path: 'create', component: () => import("@/pages/CreateCourse.vue") }
+            ],
+            beforeEnter: [checkRole]
+        },
+        {
             path: '/class',
             name: 'class',
             children: [
-                { path: '', component: () => import("@/pages/Course.vue"), name: 'class-home' },
-                { path: 'create', component: () => import("@/pages/CreateCourse.vue") },
+                { path: '', component: () => import("@/pages/AllClass.vue"), name: 'class-home' },
+                { path: 'create', component: () => import("@/pages/CreateClass.vue") },
                 { path: ':class_code', component: () => import("@/pages/Class.vue") },
                 { path: ':class_code/exercise', component: () => import("@/pages/Exercise.vue") },
                 { path: ':class_code/submission', component: () => import("@/pages/Submission.vue") },
@@ -56,7 +65,7 @@ const router = createRouter({
 
 function checkRole(to: RouteLocationNormalized) {
     const auth = useAuth();
-    if (auth.user.role !== 'Teacher') {
+    if (auth.user.role !== 'Teacher' && auth.user.role !== 'Head Lecturer') {
         return { path: to.path, name: 'notfound' };
     }
 }

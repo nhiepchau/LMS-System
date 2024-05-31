@@ -50,7 +50,17 @@
         <thead>
             <tr>
                 <th>Class</th>
-                <th class="w-50">Exercises file</th>
+                <th class="w-50">
+                    <div class="d-flex flex-row justify-space-between">
+                        <span class="my-auto">Exercises file</span>
+                        <v-btn 
+                            class="text-none text-sm-caption bg-light-blue" 
+                            flat density="compact"
+                            @click.prevent="getQuestionSample()"
+                            prepend-icon="fas fa-cloud-arrow-down"
+                        >Download sample?</v-btn>
+                    </div>
+                </th>
                 <th>Default</th>
             </tr>
         </thead>
@@ -95,6 +105,8 @@ import useCourse from '@/services/course'
 import { reactive, onMounted, ref } from 'vue';
 import ClassModel from '@/interface/ClassModel';
 import http from '@/utils/http';
+import axios from 'axios';
+import useAuth from '@/services/auth';
 
 const manageCourse = useCourse();
 
@@ -146,6 +158,26 @@ async function getCourseSemesters() {
             pk: x.pk,
             semester_name: x.semester_name,
         }
+    })
+}
+
+async function getQuestionSample() {
+    const baseUrl = import.meta.env.VITE_APP_API_URL
+    const auth = useAuth();
+    await axios.get(`${baseUrl}/api/sample/question/download`,
+    {
+        headers: {
+            "Authorization": `Bearer ${auth.token}`,
+            "Content-Type": "multipart/form-data"
+        },
+        responseType: 'blob'
+    }).then(function(response) {
+        const blob = new Blob([response.data], { type: 'text/csv' })
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(blob)
+        link.download = 'Question-Sample.csv'
+        link.click()
+        URL.revokeObjectURL(link.href)
     })
 }
 

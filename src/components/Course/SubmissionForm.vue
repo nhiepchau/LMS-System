@@ -19,9 +19,17 @@
                     </v-tabs>
                     <v-window v-model="verticalTab" class="border-sm rounded w-75 pa-4" style="height: 250px; ; margin-top: -70px;" >
                         <v-window-item v-for="(val, idx) in classes" :key="idx" :value="val.Name">
-                            <div class="d-flex flex-row text-primary">
-                                <v-icon class="mr-2">fas fa-file-alt</v-icon>
-                                <h3>Submissions file</h3>
+                            <div class="d-flex flex-row justify-space-between">
+                                <div class="d-flex flex-row text-primary">
+                                    <v-icon class="mr-2">fas fa-file-alt</v-icon>
+                                    <h3>Submissions file</h3>
+                                </div>
+                                <v-btn 
+                                    class="text-none text-sm-caption bg-light-blue" 
+                                    flat density="compact"
+                                    @click.prevent="getSubmissionSample()"
+                                    prepend-icon="fas fa-cloud-arrow-down"
+                                >Download sample?</v-btn>
                             </div>
                             <div class="mt-15">
                                 <file-input :idx="idx" type="Submission" ></file-input>
@@ -44,7 +52,7 @@
                         {{ val.Name }}
                     </v-tab>
                 </v-tabs>
-                <v-window v-model="verticalTab" class="border-sm rounded w-75 pa-4" style="height: 400px; margin-top: -70px;">
+                <v-window v-model="verticalTab" class="border-sm rounded w-75 pa-4" style="height: 500px; margin-top: -70px;">
                     <v-window-item v-for="(val, idx) in classes" :key="idx" :value="val.Name">
                         <h3 class="text-primary">Learning outcome distribution</h3>
                         <p class="text-dark-grey text-sm-body-2">Loading learning outcome details from your data</p>
@@ -69,6 +77,8 @@
 import { onMounted, ref } from 'vue';
 import useCourse from '@/services/course';
 import http from '@/utils/http';
+import useAuth from '@/services/auth';
+import axios from 'axios';
 
 const tab = ref<String>('');
 const verticalTab = ref<String>('');
@@ -98,5 +108,25 @@ async function getOutcomes() {
                 }
             })
         });
+}
+
+async function getSubmissionSample() {
+    const baseUrl = import.meta.env.VITE_APP_API_URL
+    const auth = useAuth();
+    await axios.get(`${baseUrl}/api/sample/submission/download`,
+    {
+        headers: {
+            "Authorization": `Bearer ${auth.token}`,
+            "Content-Type": "multipart/form-data"
+        },
+        responseType: 'blob'
+    }).then(function(response) {
+        const blob = new Blob([response.data], { type: 'text/csv' })
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(blob)
+        link.download = 'Submission-Sample.csv'
+        link.click()
+        URL.revokeObjectURL(link.href)
+    })
 }
 </script>@/interface/CourseModel

@@ -1,0 +1,1 @@
+import{a,k as o,b as t,w as n,x as s,F as c,e as r,_}from"./index-MoPcLG9q.js";import{_ as i}from"./_plugin-vue_export-helper-DlAUqK2U.js";const f={},l=r("h1",null,"Notifications",-1);function m(d,p){const e=_;return a(),o(c,null,[t(e),t(s,null,{default:n(()=>[l]),_:1})],64)}const h=i(f,[["render",m]]);export{h as default};
