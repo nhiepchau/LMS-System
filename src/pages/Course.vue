@@ -11,7 +11,8 @@
 
         <div class="mt-10" style="display: grid; grid-template-columns: 375px 375px auto; gap: 20px;">
             <course-item class="mr-4 w-100" v-for="(course, index) in courses" 
-                :key="index" 
+                :key="index"
+                :id="index"
                 :course_code="course.course_code"
                 :course_name="course.course_name"
                 :department="course.department"

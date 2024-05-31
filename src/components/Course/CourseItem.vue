@@ -1,6 +1,6 @@
 <template>
     <v-card
-        color="grey-lighten-3 bg-blue-lighten-5"
+        :color="`grey-lighten-3 ${getColor}`"
         variant="outlined"
         class="w-33"
     >
@@ -36,11 +36,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const dialog = ref(false);
 
+const getColor = computed(() => {
+    let number = props.id % 4;
+    switch (number) {
+        case 0:
+            return 'bg-blue-lighten-5'
+
+        case 1:
+            return 'bg-orange-lighten-5'
+
+        case 2:
+            return 'bg-green-lighten-5'
+
+        case 3:
+            return 'bg-red-lighten-5'
+    }
+})
+
 const props = defineProps({
+    id: {
+        type: Number,
+        required: true
+    },
     course_code: {
         type: String,
         required: true
