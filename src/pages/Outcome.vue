@@ -48,6 +48,9 @@
             item-value="name"
             @update:options="loadItems"
         >
+            <template v-slot:item.student="{ value }">
+                {{ secureStudentInfo(value, 3, "*") }}
+            </template>
             <template v-slot:item.progress="{ value }">
                 <v-btn icon flat variant="plain" @click="() => { dialog = true; selectedStudent = value }" >
                     <v-icon size="small" class="text-sub">fas fa-chart-simple</v-icon>
@@ -153,8 +156,8 @@ async function getOutcomeProgress(page: Number, itemsPerPage: Number) {
         progresses.value = data.map((x: { student: any; first_name: any; last_name: any, secured_student: any, [key: string]: any }) => {
             let  result = {} as any
             result['student'] = x.student;
-            result['first_name'] = x.first_name;
-            result['last_name'] = x.last_name;
+            result['first_name'] = secureStudentInfo(x.first_name, 1, "x");
+            result['last_name'] = secureStudentInfo(x.last_name, 1, "x");
             result['secured_student'] = x.secured_student;
 
             outcomes.value.forEach(o => {
@@ -171,6 +174,12 @@ async function getOutcomeProgress(page: Number, itemsPerPage: Number) {
         // Update loading
         loading.value = false;
     });
+}
+
+function secureStudentInfo(info: any, keep: number, secured_char: string) {
+    const first_char = `${info}`.substring(0, keep);
+    const len = `${info}`.length;
+    return first_char + secured_char.repeat(len - keep);
 }
 
 const currentHeaders = computed(() => {

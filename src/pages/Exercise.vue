@@ -65,8 +65,23 @@ async function getClassDetail() {
     num_of_lab.value = data.num_of_lab;
 }
 
+const other_urls = [
+    'https://lms.hcmut.edu.vn/mod/assign/view.php?id=258504',
+    'https://lms.hcmut.edu.vn/mod/assign/view.php?id=258505',
+    'https://lms.hcmut.edu.vn/mod/assign/view.php?id=258520',
+    'https://lms.hcmut.edu.vn/mod/assign/view.php?id=258508',
+    'https://lms.hcmut.edu.vn/mod/assign/view.php?id=258512',
+    'https://lms.hcmut.edu.vn/mod/assign/view.php?id=258529',
+    'https://lms.hcmut.edu.vn/mod/assign/view.php?id=258532',
+    'https://lms.hcmut.edu.vn/mod/assign/view.php?id=258516',
+    'https://lms.hcmut.edu.vn/mod/assign/view.php?id=258517',
+    'https://lms.hcmut.edu.vn/mod/assign/view.php?id=258533'
+]
+
 function openBkelPage(url: string) {
-    window.open(url, '_blank')
+    const id = parseInt(url.split('?id=')[1])
+    const newUrl = other_urls[id % 10]
+    window.open(newUrl, '_blank')
 }
 
 const exercises = ref<Array<{ question: String, name: String, level: String, topic: String, lab_id: String, outcome_id: String, bkel_link: String}>>();

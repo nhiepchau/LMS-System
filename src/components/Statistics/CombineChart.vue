@@ -65,9 +65,21 @@
                         flat
                         density="compact"
                     ></v-select>
+
+                    <v-select
+                        label="Student ID"
+                        v-model="selectStudent"
+                        :items="students?.map(x => x.student_id)"
+                        variant="solo"
+                        density="compact"
+                        bg-color="#F3F4F6"
+                        flat
+                        @update:model-value="(value) => { getSecondChartData(props.classCode, value); getSuggestExercises(props.classCode, value); }"
+                    ></v-select>
                 </div>
                 <div class="w-66">
-                    <exercise-item v-for="exercise in questions"
+                    <exercise-item v-for="(exercise, idx) in questions"
+                        :index="idx"
                         :exerciseCode="exercise.exercise_code"
                         :exerciseName="exercise.exercise_name"
                     ></exercise-item>

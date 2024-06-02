@@ -92,7 +92,9 @@ async function onSubmit () {
 
                 // Save user info
                 const user = response.data.user;
-                auth.setUserInfo(`${user.first_name} ${user.last_name}`
+                const fullname = user.is_teacher ? `${user.first_name} ${user.last_name}`
+                    : `${getSecuredName(user.first_name)} ${getSecuredName(user.last_name)}`;
+                auth.setUserInfo(fullname
                     , user.is_teacher ? (user.is_head_teacher ? 'Head Lecturer' : 'Teacher') : 'Student'
                     , user.email
                     , user.is_teacher ? '' : user.student_id)
@@ -101,7 +103,7 @@ async function onSubmit () {
                 sessionStorage.setItem('username', usernameVal);
                 sessionStorage.setItem('password', passwordVal);
                 sessionStorage.setItem('token', response.data.access);
-                sessionStorage.setItem('fullname', `${user.first_name} ${user.last_name}`);
+                sessionStorage.setItem('fullname', fullname);
                 sessionStorage.setItem('role', user.is_teacher ? (user.is_head_teacher ? 'Head Lecturer' : 'Teacher') : 'Student');
                 sessionStorage.setItem('email', user.email);
                 sessionStorage.setItem('studentId', user.is_teacher ? '' : user.student_id)
@@ -115,6 +117,13 @@ async function onSubmit () {
             });
     }, 1000)
 }
+
+function getSecuredName(hashed: any) {
+    const first_char = `${hashed}`.at(0);
+    const len = `${hashed}`.length;
+    return first_char + "x".repeat(len - 1);
+}
+
 function required (v: String) {
     return !!v || 'Field is required'
 }
