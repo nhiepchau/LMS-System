@@ -9,7 +9,7 @@
                     :items="courses?.map(x => x.class_code)"
                     variant="solo"
                     density="compact"
-                    class="mr-2"
+                    class=""
                     bg-color="#F3F4F6"
                     flat
             ></v-select>

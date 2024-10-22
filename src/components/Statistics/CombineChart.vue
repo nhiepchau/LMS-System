@@ -4,23 +4,9 @@
             <h3 class="w-66">{{ props.title }}</h3>
         </div>
 
-        <div class="d-flex flex-row mt-2 mb-2">
-            <div style="width: 50%; height: 300px;">
-                <div class="d-flex flex-row justify-space-between">
-                    <div class="w-33">
-                        <v-select
-                            label="Outcome"
-                            v-model="chartOutcome"
-                            :items="outcomes"
-                            variant="solo"
-                            bg-color="#F3F4F6"
-                            flat
-                            density="compact"
-                            @update:model-value="(value) => { getChartData(props.classCode); }"
-                        ></v-select>
-                    </div>
-                    <div class="mt-2 font-italic font-weight-medium text-dark-brown">Average progress outcome: {{ state.averageProgress * 100 }}%</div>
-                </div>
+        <div class="mt-2 mb-2">
+            <div class="w-100">
+                <div class="mt-2 font-italic text-dark-brown"><span class="font-weight-medium">Average progress outcome:</span> <span v-for="avg in state.averageProgress">{{ avg.outcome }} ({{ avg.progress * 100 }}%). </span></div>
                 <!-- Draw chart -->
                 <Bar
                     id="my-chart-id"
@@ -28,7 +14,12 @@
                     :data="currentChartData"
                 />
             </div>
-            <v-divider vertical class="mx-4" style="height: 360px;" ></v-divider>
+            <!-- <v-divider vertical class="mx-4" style="height: 360px;" ></v-divider> -->
+        </div>
+    </div>
+    <div class="pa-4 border-sm rounded-lg mt-6">
+        <h3>Suggested Exercises for Student</h3>
+        <div class="d-flex flex-row mt-2 mb-2">
             <div style="width: 50%; height: 300px;">
                 <div class="w-33 text-right">
                     <v-select
@@ -50,39 +41,33 @@
                     :data="currentSecondChartData"
                 />
             </div>
-        </div>
-
-        <div class="w-100 mt-5">
-            <h3>Suggested Exercises for Student</h3>
-            <div class="mt-3 d-flex flex-row justify-space-between">
-                <div class="w-25">
-                    <v-select
-                        label="Outcome"
-                        v-model="selectOutcome"
-                        :items="outcomes"
-                        variant="solo"
-                        bg-color="#F3F4F6"
-                        flat
-                        density="compact"
-                    ></v-select>
-
-                    <v-select
-                        label="Student ID"
-                        v-model="selectStudent"
-                        :items="students?.map(x => x.student_id)"
-                        variant="solo"
-                        density="compact"
-                        bg-color="#F3F4F6"
-                        flat
-                        @update:model-value="(value) => { getSecondChartData(props.classCode, value); getSuggestExercises(props.classCode, value); }"
-                    ></v-select>
-                </div>
-                <div class="w-66">
-                    <exercise-item v-for="(exercise, idx) in questions"
-                        :index="idx"
-                        :exerciseCode="exercise.exercise_code"
-                        :exerciseName="exercise.exercise_name"
-                    ></exercise-item>
+            <v-divider vertical class="mx-4" style="height: 300px; margin-top: 60px;" ></v-divider>
+            <div style="width: 50%; height: 300px;">
+                <div class="mt-3">
+                    <div class="w-25">
+                        <v-select
+                            label="Outcome"
+                            v-model="selectOutcome"
+                            :items="outcomes"
+                            variant="solo"
+                            bg-color="#F3F4F6"
+                            flat
+                            density="compact"
+                            @update:model-value="(value) => { getSuggestExercises(props.classCode, selectStudent ?? 0); }"
+                        ></v-select>
+                    </div>
+                    <div class="w-100">
+                        <exercise-item v-for="(exercise, idx) in questions?.slice(0, 7)"
+                            :index="idx"
+                            :exerciseCode="exercise.exercise_code"
+                            :exerciseName="exercise.exercise_name"
+                            :exerciseId="exercise.exercise_id"
+                            :level="getTitle(exercise.level)"
+                            :topic="exercise.topic"
+                            :url="exercise.url"
+                            :outcome="exercise.outcome"
+                        ></exercise-item>
+                    </div>
                 </div>
             </div>
         </div>
@@ -101,9 +86,9 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 const selectStudent = ref<number>();
 const chartOutcome = ref<string>('');
 const selectOutcome = ref<string>('');
-const outcomes = ref<string[]>();
+const outcomes = ref<string[]>([]);
 const students = ref<Array<{ student_id: number, secured_student_id: number, first_name: string, last_name: string }>>();
-const questions = ref<Array<{ exercise_id: number, exercise_code: string, exercise_name: string, level: number }>>();
+const questions = ref<Array<{ exercise_id: number, exercise_code: string, exercise_name: string, level: number, topic: string, url: string, outcome: string }>>();
 
 const props = defineProps({
     title: {
@@ -121,7 +106,7 @@ const props = defineProps({
 });
 
 const state = reactive({
-    averageProgress: 0,
+    averageProgress: [] as { outcome: string, progress: number }[],
     chartData: {
         labels: [] as string[],
         datasets: [
@@ -177,23 +162,61 @@ async function getStudentsByClass(classCode: string) {
     })
 }
 
+function getTitle(value: number) {
+    if (value === 3) return 'Hard'
+    else if (value === 2) return 'Medium'
+    else return 'Easy'
+}
+
+const chartColors = [
+    {
+        'primary': '#4EA699',
+        'sub': '#D3FFD3'
+    },
+    {
+        'primary': '#6F9CEB',
+        'sub': '#D3E1FF'
+    },
+    {
+        'primary': '#E15358',
+        'sub': '#FFD3D3'
+    },
+    {
+        'primary': '#FF7818',
+        'sub': '#FFD2B2'
+    },
+    {
+        'primary': '#663A82',
+        'sub': '#BCA0DC'
+    },
+    {
+        'primary': '#4F4F4F',
+        'sub': '#BABABA'
+    }
+]
+
 async function getChartData(classCode: string) {
-    await http.get(`/api/classes/${classCode}/outcomes/${chartOutcome.value}/histogram`)
+    await http.get(`/api/classes/${classCode}/outcomes/all/histogram`)
     .then(function(response) {
         const { data } = response;
         state.chartData = {
             labels: ["0 - 0.2", "0.2 - 0.4", "0.4 - 0.6", "0.6 - 0.8", "0.8 - 1"],
-            datasets: [
-                {
-                    label: 'Number of student',
-                    backgroundColor: '#4EA699',
-                    data: [data["0 - 0.2"], data["0.2 - 0.4"], data["0.4 - 0.6"], data["0.6 - 0.8"], data["0.8 - 1"]],
-                    barThickness: 30,
+            datasets: data.map((x: any, index: number) => {
+                return {
+                    label: x["outcome_code"],
+                    backgroundColor: chartColors[index].primary,
+                    data: [x["0 - 0.2"], x["0.2 - 0.4"], x["0.4 - 0.6"], x["0.6 - 0.8"], x["0.8 - 1"]],
+                    barThickness: 20,
                     borderWidth: 1
                 }
-            ]
+            })
         };
-        state.averageProgress = data["average"]
+        state.averageProgress = data.map((x: any) => {
+            return {
+                outcome: x["outcome_code"],
+                progress: x["average"]
+            }
+        })
     });
 }
 
@@ -229,15 +252,18 @@ async function getSecondChartData(classCode: string, student: number) {
 }
 
 async function getSuggestExercises(classCode: string, student: number) {
-    await http.get(`/api/classes/${classCode}/students/${student}/recommend`)
+    await http.get(`/api/classes/${classCode}/outcomes/${selectOutcome.value}/students/${student}/recommend`)
     .then(function(response) {
         const { data } = response;
-        questions.value = data.map((x: { exercise_id: any, exercise_code: any, exercise_name: any, level: any }) => {
+        questions.value = data.map((x: { exercise_id: any, exercise_code: any, exercise_name: any, level: any, topic: any, url: any, outcome: any }) => {
             return {
                 exercise_id: x.exercise_id,
                 exercise_code: x.exercise_code,
                 exercise_name: x.exercise_name,
-                level: x.level
+                level: x.level,
+                topic: x.topic,
+                url: x.url,
+                outcome: x.outcome
             }
         })
     })
@@ -261,12 +287,21 @@ async function getOutcomesByCourse(classCode: string) {
         if (chartOutcome.value) {
             getChartData(props.classCode);
         }
+
+        if (selectOutcome.value) {
+            getSuggestExercises(props.classCode, selectStudent.value ?? 0);
+        }
     });
 }
 
 const chartOptions : any = {
     responsive: true,
-    maintainAspectRatio: false
+    maintainAspectRatio: true,
+    scales: {
+        y: {
+            beginAtZero: true
+        }
+    }
 }
 
 const secondChartOptions : any = {

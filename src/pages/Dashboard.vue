@@ -61,13 +61,19 @@
                     bg-color="#F3F4F6"
                     flat
                     density="compact"
+                    @update:model-value="(value) => { getSuggestExercises(selectClass, parseInt(auth.user.studentId)) }"
                 ></v-select>
             </div>
             <div class="w-66">
                 <div class="">
-                    <exercise-item v-for="exercise in questions?.slice(0, 3)"
+                    <exercise-item v-for="exercise in questions?.slice(0, 5)"
                         :exerciseCode="exercise.exercise_code"
                         :exerciseName="exercise.exercise_name"
+                        :exerciseId="exercise.exercise_id"
+                        :level="getTitle(exercise.level)"
+                        :topic="exercise.topic"
+                        :url="exercise.url"
+                        :outcome="exercise.outcome"
                     ></exercise-item>
                 </div>
             </div>
@@ -88,7 +94,7 @@ const selectClass = ref<string>('');
 const outcome = ref<string>('');
 const numOfLab = ref<number>();
 const allOutcomes = ref<Array<{ pk: number, outcome_code: string, parent_outcome: string, threshold: number }>>();
-const questions = ref<Array<{ exercise_id: number, exercise_code: string, exercise_name: string, level: number }>>();
+const questions = ref<Array<{ exercise_id: number, exercise_code: string, exercise_name: string, level: number, topic: string, url: string, outcome: string }>>();
 const courses = ref<Array<{ name: string, course_code: string, class_code: string, group: string, num_of_lab: number, semester: string, num_of_students: number, num_of_submissions: number, num_of_exercises: number, num_submit_file: number }>>();
 
 async function getClasses() {
@@ -128,18 +134,27 @@ async function getClasses() {
 }
 
 async function getSuggestExercises(classCode: string, student: number) {
-    await http.get(`/api/classes/${classCode}/students/${student}/recommend`)
+    await http.get(`/api/classes/${classCode}/outcomes/${outcome.value}/students/${student}/recommend`)
     .then(function(response) {
         const { data } = response;
-        questions.value = data.map((x: { exercise_id: any, exercise_code: any, exercise_name: any, level: any }) => {
+        questions.value = data.map((x: { exercise_id: any, exercise_code: any, exercise_name: any, level: any, topic: any, url: any, outcome: any }) => {
             return {
                 exercise_id: x.exercise_id,
                 exercise_code: x.exercise_code,
                 exercise_name: x.exercise_name,
-                level: x.level
+                level: x.level,
+                topic: x.topic,
+                url: x.url,
+                outcome: x.outcome
             }
         })
     })
+}
+
+function getTitle(value: number) {
+    if (value === 3) return 'Hard'
+    else if (value === 2) return 'Medium'
+    else return 'Easy'
 }
 
 function compareString (a: { outcome_code: string }, b: { outcome_code: string }) {
@@ -161,6 +176,9 @@ async function getOutcomesByCourse(classCode: string) {
         }).sort(compareString);
 
         outcome.value = allOutcomes.value?.at(0)?.outcome_code ?? '';
+        if (outcome.value) {
+            getSuggestExercises(selectClass.value, parseInt(auth.user.studentId));
+        }
     });
 }
 
